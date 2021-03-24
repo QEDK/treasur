@@ -7,8 +7,8 @@ import Fonts from './assets/Fonts';
 
 const theme = extendTheme({
   fonts: {
-    body: "Lato",
-    heading:"Lato",
+    body: "Roboto",
+    heading:"Roboto",
   },
 })
 
