@@ -1,4 +1,3 @@
-// contracts/GameItem.sol
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
@@ -13,11 +12,11 @@ contract YTVideo is ERC721URIStorage, Ownable {
     constructor() public ERC721("YTVideo", "YT") {
     }
     
-    function mintVideo(address parentContract, string memory tokenURI) public onlyOwner returns (uint256) {
+    function mintVideo(string memory tokenURI) external onlyOwner returns (uint256) {
         _tokenIds.increment();
 
         uint256 newTokenId = _tokenIds.current();
-        _safeMint(parentContract, newTokenId);
+        _safeMint(owner(), newTokenId);
         _setTokenURI(newTokenId, tokenURI);
 
         return newTokenId;
