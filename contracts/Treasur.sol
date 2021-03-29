@@ -10,8 +10,8 @@ import "https://github.com/smartcontractkit/chainlink/blob/master/evm-contracts/
 contract chainlinkFeed is Ownable {
     AggregatorV3Interface internal priceFeed;
 
-    constructor() {
-        priceFeed = AggregatorV3Interface(0x9326BFA02ADD2366b30bacB125260Af641031331);
+    constructor(address _chainlinkFeed) {
+        priceFeed = AggregatorV3Interface(_chainlinkFeed);
     }
     
     function changeFeedAddress(address newContract) public onlyOwner {
@@ -42,7 +42,7 @@ contract Treasur is Ownable, IERC721Receiver {
     address childContract = address(0);
     // Mainnet: 0xAB594600376Ec9fD91F8e885dADF0CE036862dE0
     // Testnet: 0xd0D5e3DB44DE05E9F294BB0a3bEEaF030DE24Ada
-    chainlinkFeed priceFeed = new chainlinkFeed();
+    chainlinkFeed priceFeed = new chainlinkFeed(0xd0D5e3DB44DE05E9F294BB0a3bEEaF030DE24Ada);
     mapping (bytes32 => bestOffer) offerBalances; // URI: address: balance: timestamp
     uint256 externalBalance = 0; // Balance held in escrow
     mapping (bytes32 => address) tokenCreators;
