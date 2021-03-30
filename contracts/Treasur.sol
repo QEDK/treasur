@@ -7,7 +7,11 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.0.0/contr
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.0.0/contracts/utils/structs/EnumerableSet.sol";
 import "https://github.com/smartcontractkit/chainlink/blob/master/evm-contracts/src/v0.6/interfaces/AggregatorV3Interface.sol";
 
+<<<<<<< HEAD
 contract ChainlinkFeed is Ownable {
+=======
+contract chainlinkFeed is Ownable {
+>>>>>>> 5a7ad83050c056ef0f4786cafc11148b4c823ab6
     AggregatorV3Interface internal priceFeed;
 
     constructor(address _chainlinkFeed) {
@@ -34,7 +38,11 @@ contract Treasur is Ownable, IERC721Receiver {
     using EnumerableSet for EnumerableSet.Bytes32Set;
     
     struct bestOffer {
+<<<<<<< HEAD
         address payable offerer;
+=======
+        address offerer;
+>>>>>>> 5a7ad83050c056ef0f4786cafc11148b4c823ab6
         uint256 value;
         uint256 timestamp;
     }
@@ -42,10 +50,17 @@ contract Treasur is Ownable, IERC721Receiver {
     address childContract = address(0);
     // Mainnet: 0xAB594600376Ec9fD91F8e885dADF0CE036862dE0
     // Testnet: 0xd0D5e3DB44DE05E9F294BB0a3bEEaF030DE24Ada
+<<<<<<< HEAD
     ChainlinkFeed priceFeed = new ChainlinkFeed(0xd0D5e3DB44DE05E9F294BB0a3bEEaF030DE24Ada);
     mapping (bytes32 => bestOffer) offerBalances; // URI: address: balance: timestamp
     uint256 externalBalance = 0; // Balance held in escrow
     mapping (bytes32 => address payable) tokenCreators;
+=======
+    chainlinkFeed priceFeed = new chainlinkFeed(0xd0D5e3DB44DE05E9F294BB0a3bEEaF030DE24Ada);
+    mapping (bytes32 => bestOffer) offerBalances; // URI: address: balance: timestamp
+    uint256 externalBalance = 0; // Balance held in escrow
+    mapping (bytes32 => address) tokenCreators;
+>>>>>>> 5a7ad83050c056ef0f4786cafc11148b4c823ab6
     EnumerableSet.Bytes32Set awaitingMint;
     EnumerableSet.Bytes32Set awaitingSell;
     uint16 creatorFee = 900; // stored as fee / 10
@@ -53,12 +68,17 @@ contract Treasur is Ownable, IERC721Receiver {
     uint16 creatorFeeSecondary = 25;
     uint16 platformFeeSecondary = 50;
     uint16 sellerFee = 925;
+<<<<<<< HEAD
     uint256 minOfferTime = 1 weeks;
     uint256 minMarketTime = 1 weeks;
     uint16 minOffer = 10; // upto 65535 USD
     
     event ReceivedExternal(address, uint256);
     event Refund(address, uint256);
+=======
+    
+    event ReceivedExternal(address, uint);
+>>>>>>> 5a7ad83050c056ef0f4786cafc11148b4c823ab6
     
     receive() external payable {
         emit ReceivedExternal(msg.sender, msg.value);
@@ -96,15 +116,23 @@ contract Treasur is Ownable, IERC721Receiver {
     
     function offer(bytes32 tokenURI) external payable returns (bool) {
         require(!awaitingMint.contains(tokenURI), "This token is already awaiting mint");
+<<<<<<< HEAD
         require(((msg.value*priceFeed.getLatestPrice())/1e25) >= minOffer, "Sent value is too low");
         externalBalance += msg.value;
         offerBalances[tokenURI] = bestOffer(payable(msg.sender), msg.value, block.timestamp);
+=======
+        require(msg.value > priceFeed.getLatestPrice()*100000000000, "Sent value is too low");
+        // 10 USD MATIC = 10*latestPrice*(10^-8)*(10^18) (convert to wei)
+        externalBalance += msg.value;
+        offerBalances[tokenURI] = bestOffer(msg.sender, msg.value, block.timestamp);
+>>>>>>> 5a7ad83050c056ef0f4786cafc11148b4c823ab6
         awaitingMint.add(tokenURI);
         return true;
     }
     
     function revokeOffer(bytes32 tokenURI) external payable returns (bool) {
         require(awaitingMint.contains(tokenURI), "This token is not awaiting mint");
+<<<<<<< HEAD
         require(msg.sender == offerBalances[tokenURI].offerer, "No permission to revoke offer");
         require((block.timestamp - offerBalances[tokenURI].timestamp) >= minOfferTime, "Offer cannot be revoked yet");
         awaitingMint.remove(tokenURI);
@@ -113,11 +141,14 @@ contract Treasur is Ownable, IERC721Receiver {
         externalBalance -= refund.value;
         refund.offerer.transfer(refund.value);
         emit Refund(refund.offerer, refund.value);
+=======
+>>>>>>> 5a7ad83050c056ef0f4786cafc11148b4c823ab6
         return true;
     }
 
     function counterOffer(bytes32 tokenURI) external payable returns (bool) {
         require(awaitingMint.contains(tokenURI), "This token is not awaiting mint");
+<<<<<<< HEAD
         if(msg.sender == offerBalances[tokenURI].offerer) {
             offerBalances[tokenURI].value += msg.value;
             externalBalance += msg.value;
@@ -133,6 +164,14 @@ contract Treasur is Ownable, IERC721Receiver {
     }
     
     function approveMint(bytes32 tokenURI, string memory tokenURIStr, address payable tokenCreator) external onlyOwner returns (uint256) {
+=======
+        require(msg.value > offerBalances[tokenURI].value, "Sent value less than highest offer");
+        externalBalance += msg.value;
+        return true;
+    }
+    
+    function approveMint(bytes32 tokenURI, string memory tokenURIStr, address tokenCreator) external onlyOwner returns (uint256) {
+>>>>>>> 5a7ad83050c056ef0f4786cafc11148b4c823ab6
         require(awaitingMint.contains(tokenURI), "This token is not awaiting mint");
         awaitingMint.remove(tokenURI);
         uint256 tokenId = _mint(tokenURIStr);
