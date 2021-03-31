@@ -1,19 +1,25 @@
 import "./App.css";
 
-import {Text} from "@chakra-ui/react";
+import {ChakraProvider, extendTheme, Container} from "@chakra-ui/react";
+import CardList from "./components/CardList";
+import Fonts from './assets/Fonts';
+
+
+const theme = extendTheme({
+  fonts: {
+    body: "Roboto",
+    heading:"Roboto",
+  },
+})
 
 function App() {
   return (
-    <div className="App">
-      <Text
-        bgGradient="linear(to-l, #7928CA,#FF0080)"
-        bgClip="text"
-        fontSize="6xl"
-        fontWeight="extrabold"
-      >
-        Welcome to Tokenized Videos!
-      </Text>
-    </div>
+    <ChakraProvider theme={theme}>
+      <Fonts />
+      <Container maxW="container.lg" centerContent>
+      <CardList />
+      </Container>
+      </ChakraProvider>
   );
 }
 
