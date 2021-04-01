@@ -1,30 +1,33 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.0 <=0.8.3;
 
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.0.0/contracts/access/Ownable.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.0.0/contracts/token/ERC721/IERC721Receiver.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.0.0/contracts/token/ERC20/IERC20.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.0.0/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.0.0/contracts/utils/Counters.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.0.0/contracts/utils/structs/EnumerableSet.sol";
-import "https://github.com/smartcontractkit/chainlink/blob/master/evm-contracts/src/v0.6/interfaces/AggregatorV3Interface.sol";
+
+import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@chainlink/contracts/src/v0.6/interfaces/AggregatorV3Interface.sol";
+
+import "hardhat/console.sol";
 
 contract YTVideo is ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     string public baseURI = "https://treasur.co/token/";
-    
+
     constructor() ERC721("YTVideo", "YT") {
     }
-    
+
     function setBaseURI(string memory baseURIStr) external onlyOwner {
         baseURI = baseURIStr;
     }
-    
+
     function _baseURI() internal view override returns (string memory) {
         return baseURI;
     }
-    
+
     function mintVideo(string memory tokenURI, address addr) external onlyOwner returns (uint256) {
         _tokenIds.increment();
 
@@ -44,14 +47,14 @@ contract ChainlinkFeed is Ownable {
         // Testnet: 0x0715A7794a1dc8e42615F059dD6e406A6594651A
         priceFeed = AggregatorV3Interface(0x0715A7794a1dc8e42615F059dD6e406A6594651A);
     }
-    
+
     function changeFeedAddress(address newContract) external onlyOwner {
         priceFeed = AggregatorV3Interface(newContract);
     }
-    
+
     function getLatestPrice() public view returns (uint256) {
         (
-            uint80 roundID, 
+            uint80 roundID,
             int price,
             uint startedAt,
             uint timeStamp,
@@ -63,13 +66,13 @@ contract ChainlinkFeed is Ownable {
 
 contract Treasur is Ownable, IERC721Receiver {
     using EnumerableSet for EnumerableSet.Bytes32Set;
-    
+
     struct bestOffer {
         address payable offerer;
         uint256 value;
         uint256 timestamp;
     }
-    
+
     // Mainnet: 0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619
     // Testnet: 0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa
     IERC20 WETH = IERC20(0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1); // WETH (PoS)
@@ -88,15 +91,15 @@ contract Treasur is Ownable, IERC721Receiver {
     uint256 minOfferTime = 1 weeks;
     uint256 minMarketTime = 1 weeks;
     uint16 minOffer = 10; // upto 65535 USD
-    
+
     event ReceivedExternal(address indexed addr, uint256 amount);
     event Refund(address indexed addr, uint256 amount);
     event Mint(address indexed addr, uint256 tokenId, string tokenURIStr);
-    
+
     receive() external payable {
         emit ReceivedExternal(msg.sender, msg.value);
     }
-    
+
     function setFees(uint16 _creatorFee, uint16 _creatorFeeSecondary, uint16 _sellerFee, uint16 _platformFee, uint16 _platformFeeSecondary) external onlyOwner returns (bool) {
         creatorFee = _creatorFee;
         creatorFeeSecondary = _creatorFeeSecondary;
@@ -105,27 +108,27 @@ contract Treasur is Ownable, IERC721Receiver {
         platformFeeSecondary = _platformFeeSecondary;
         return true;
     }
-    
+
     function withdraw() external onlyOwner payable {
        payable(owner()).transfer(address(this).balance);
     }
-    
+
     function withdrawWETH() external onlyOwner {
         WETH.transfer(owner(), withdrawableAmount);
     }
-    
+
     function setIERC20(IERC20 _WETH) external onlyOwner {
         WETH = _WETH;
     }
-    
+
     function onERC721Received(address operator, address from, uint256 tokenId, bytes calldata data) external pure override returns (bytes4) {
         return this.onERC721Received.selector;
     }
-    
+
     function chainLinkPrice() external view returns (uint) {
         return priceFeed.getLatestPrice();
     }
-    
+
     function offer(bytes32 tokenURI, uint256 amount) external returns (bool) {
         require(!awaitingMint.contains(tokenURI) && !Minted.contains(tokenURI), "NFT is already awaiting mint or minted");
         require(((amount*priceFeed.getLatestPrice())/10e25) >= minOffer, "Sent value is too low");
@@ -135,7 +138,7 @@ contract Treasur is Ownable, IERC721Receiver {
         require(success, "Transaction was not approved");
         return true;
     }
-    
+
     function revokeOffer(bytes32 tokenURI) external returns (bool) {
         require(awaitingMint.contains(tokenURI), "This token is not awaiting mint");
         require(msg.sender == offerBalances[tokenURI].offerer, "No permission to revoke offer");
@@ -164,7 +167,7 @@ contract Treasur is Ownable, IERC721Receiver {
         }
         return true;
     }
-    
+
     function approveMint(bytes32 tokenURI, string memory tokenURIStr, address payable tokenCreator) external onlyOwner returns (uint256) {
         require(awaitingMint.contains(tokenURI), "This token is not awaiting mint");
         awaitingMint.remove(tokenURI);
@@ -179,7 +182,7 @@ contract Treasur is Ownable, IERC721Receiver {
         emit Mint(top.offerer, tokenId, tokenURIStr);
         return tokenId;
     }
-    
+
     function declineMint(bytes32 tokenURI) external onlyOwner returns (bool) {
         require(awaitingMint.contains(tokenURI), "This token is not awaiting mint");
         awaitingMint.remove(tokenURI);
@@ -188,7 +191,7 @@ contract Treasur is Ownable, IERC721Receiver {
         _refundTopOffer(refund);
         return true;
     }
-    
+
     function _refundTopOffer(bestOffer memory topOffer) internal {
         bool success = WETH.transfer(topOffer.offerer, topOffer.value);
         require(success, "Not enough WETH in contract");
