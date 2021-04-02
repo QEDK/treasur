@@ -19,7 +19,11 @@ async function main() {
 
   await treasur.deployed();
 
-  console.log("Treasur deployed to:", greeter.address);
+  console.log("Treasur deployed to:", treasur.address);
+
+  const WETH = ethers.utils.parseUnits("2.0", 18);
+  treasur.offer()
+
 }
 
 // We recommend this pattern to be able to use async/await everywhere

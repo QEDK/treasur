@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.0 <=0.8.3;
 
-
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -12,31 +11,22 @@ import "@chainlink/contracts/src/v0.6/interfaces/AggregatorV3Interface.sol";
 
 import "hardhat/console.sol";
 
-contract YTVideo is ERC721URIStorage, Ownable {
-    using Counters for Counters.Counter;
-    Counters.Counter private _tokenIds;
-    string public baseURI = "https://treasur.co/token/";
-
-    constructor() ERC721("YTVideo", "YT") {
-    }
-
-    function setBaseURI(string memory baseURIStr) external onlyOwner {
-        baseURI = baseURIStr;
-    }
-
-    function _baseURI() internal view override returns (string memory) {
-        return baseURI;
-    }
-
-    function mintVideo(string memory tokenURI, address addr) external onlyOwner returns (uint256) {
-        _tokenIds.increment();
-
-        uint256 newTokenId = _tokenIds.current();
-        _safeMint(addr, newTokenId);
-        _setTokenURI(newTokenId, tokenURI);
-
-        return newTokenId;
-    }
+interface YTV721 {
+    event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
+    event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId);
+    event ApprovalForAll(address indexed owner, address indexed operator, bool approved);
+    function balanceOf(address owner) external view returns (uint256 balance);
+    function ownerOf(uint256 tokenId) external view returns (address owner);
+    function safeTransferFrom(address from, address to, uint256 tokenId) external;
+    function transferFrom(address from, address to, uint256 tokenId) external;
+    function approve(address to, uint256 tokenId) external;
+    function getApproved(uint256 tokenId) external view returns (address operator);
+    function setApprovalForAll(address operator, bool _approved) external;
+    function isApprovedForAll(address owner, address operator) external view returns (bool);
+    function safeTransferFrom(address from, address to, uint256 tokenId, bytes calldata data) external;
+    function setBaseURI(string memory baseURIStr) external;
+    function mintVideo(string memory tokenURIStr, address offerer) external returns (uint256);
+    function tokenURI(uint256 tokenId) external returns (string memory);
 }
 
 contract ChainlinkFeed is Ownable {
@@ -76,13 +66,14 @@ contract Treasur is Ownable, IERC721Receiver {
     // Mainnet: 0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619
     // Testnet: 0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa
     IERC20 WETH = IERC20(0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1); // WETH (PoS)
-    YTVideo NFT = new YTVideo();
+    YTV721 YTV = YTV721(0xe0895b8EC617C577ad2f62ee52E5C81aAF7D8b45);
     ChainlinkFeed priceFeed = new ChainlinkFeed();
     mapping (bytes32 => bestOffer) offerBalances; // URI: address: balance: timestamp
     uint256 withdrawableAmount = 0;
     mapping (bytes32 => address payable) tokenCreators;
     EnumerableSet.Bytes32Set awaitingMint;
     EnumerableSet.Bytes32Set Minted;
+    EnumerableSet.Bytes32Set Listed;
     uint16 creatorFee = 900; // stored as fee / 10
     uint16 platformFee = 100;
     uint16 creatorFeeSecondary = 25;
@@ -150,7 +141,7 @@ contract Treasur is Ownable, IERC721Receiver {
         return true;
     }
 
-    function counterOffer(bytes32 tokenURI, uint256 amount) external payable returns (bool) {
+    function counterOffer(bytes32 tokenURI, uint256 amount) external returns (bool) {
         require(awaitingMint.contains(tokenURI), "This token is not awaiting mint");
         if(msg.sender == offerBalances[tokenURI].offerer) {
             offerBalances[tokenURI].value += amount;
@@ -158,9 +149,9 @@ contract Treasur is Ownable, IERC721Receiver {
             require(success, "Transaction was not approved");
         } else {
             require(amount > offerBalances[tokenURI].value, "Sent value less than highest offer");
-            require(((amount - offerBalances[tokenURI].value)*priceFeed.getLatestPrice()/1e25) > 1, "Sent value does not meet differential");
+            require(((amount - offerBalances[tokenURI].value)*priceFeed.getLatestPrice()/10e25) > 1, "Sent value does not meet differential");
             bestOffer memory refund = offerBalances[tokenURI];
-            offerBalances[tokenURI] = bestOffer(payable(msg.sender), msg.value, block.timestamp);
+            offerBalances[tokenURI] = bestOffer(payable(msg.sender), amount, refund.timestamp);
             bool success = WETH.transferFrom(msg.sender, address(this), amount);
             require(success, "Transaction was not approved");
             _refundTopOffer(refund);
@@ -176,7 +167,7 @@ contract Treasur is Ownable, IERC721Receiver {
         bestOffer memory top = offerBalances[tokenURI];
         delete offerBalances[tokenURI];
         withdrawableAmount += (top.value - ((creatorFee*top.value)/1000));
-        uint256 tokenId = NFT.mintVideo(tokenURIStr, top.offerer);
+        uint256 tokenId = YTV.mintVideo(tokenURIStr, top.offerer);
         bool success = WETH.transfer(tokenCreator, (creatorFee*top.value)/1000);
         require(success, "Not enough WETH in contract");
         emit Mint(top.offerer, tokenId, tokenURIStr);
@@ -189,6 +180,13 @@ contract Treasur is Ownable, IERC721Receiver {
         bestOffer memory refund = offerBalances[tokenURI];
         delete offerBalances[tokenURI];
         _refundTopOffer(refund);
+        return true;
+    }
+
+    function list(uint256 tokenId, bytes32 tokenURI, uint256 bidAmount) external returns (bool) {
+        require(Minted.contains(tokenURI), "NFT has not been minted yet");
+        require(YTV.ownerOf(tokenId) == msg.sender, "Only the NFT owner can list");
+        YTV.safeTransferFrom(msg.sender, address(this), tokenId);
         return true;
     }
 

@@ -9,6 +9,7 @@ contract YTVideo is ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     string public baseURI = "https://treasur.co/token/";
+    address public minter;
 
     constructor() ERC721("YTVideo", "YT") {
     }
@@ -21,11 +22,16 @@ contract YTVideo is ERC721URIStorage, Ownable {
         return baseURI;
     }
 
-    function mintVideo(string memory tokenURI) external onlyOwner returns (uint256) {
+    function setMinter(address _minter) external onlyOwner {
+        minter = _minter;
+    }
+
+    function mintVideo(string memory tokenURI, address offerer) external returns (uint256) {
+        require(msg.sender == minter && minter != address(0), "Invalid sender");
         _tokenIds.increment();
 
         uint256 newTokenId = _tokenIds.current();
-        _safeMint(owner(), newTokenId);
+        _safeMint(offerer, newTokenId);
         _setTokenURI(newTokenId, tokenURI);
 
         return newTokenId;
