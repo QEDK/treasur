@@ -39,11 +39,13 @@ contract YTVideo is ERC721URIStorage, Ownable {
 contract ChainlinkFeed is Ownable {
     AggregatorV3Interface internal priceFeed;
 
-    constructor(address _chainlinkFeed) {
-        priceFeed = AggregatorV3Interface(_chainlinkFeed);
+    constructor() {
+        // Mainnet: 0xF9680D99D6C9589e2a93a78A04A279e509205945
+        // Testnet: 0x0715A7794a1dc8e42615F059dD6e406A6594651A
+        priceFeed = AggregatorV3Interface(0x0715A7794a1dc8e42615F059dD6e406A6594651A);
     }
     
-    function changeFeedAddress(address newContract) public onlyOwner {
+    function changeFeedAddress(address newContract) external onlyOwner {
         priceFeed = AggregatorV3Interface(newContract);
     }
     
@@ -70,11 +72,9 @@ contract Treasur is Ownable, IERC721Receiver {
     
     // Mainnet: 0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619
     // Testnet: 0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa
-    IERC20 WETH = IERC20(0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619); // WETH (PoS)
+    IERC20 WETH = IERC20(0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1); // WETH (PoS)
     YTVideo NFT = new YTVideo();
-    // Mainnet: 0xF9680D99D6C9589e2a93a78A04A279e509205945
-    // Testnet: 0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619
-    ChainlinkFeed priceFeed = new ChainlinkFeed(0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619);
+    ChainlinkFeed priceFeed = new ChainlinkFeed();
     mapping (bytes32 => bestOffer) offerBalances; // URI: address: balance: timestamp
     uint256 withdrawableAmount = 0;
     mapping (bytes32 => address payable) tokenCreators;
@@ -118,17 +118,17 @@ contract Treasur is Ownable, IERC721Receiver {
         WETH = _WETH;
     }
     
-    function setChainlinkFeed(address _chainlinkFeed) external onlyOwner {
-        priceFeed.changeFeedAddress(_chainlinkFeed);
-    }
-    
     function onERC721Received(address operator, address from, uint256 tokenId, bytes calldata data) external pure override returns (bytes4) {
         return this.onERC721Received.selector;
     }
     
+    function chainLinkPrice() external view returns (uint) {
+        return priceFeed.getLatestPrice();
+    }
+    
     function offer(bytes32 tokenURI, uint256 amount) external returns (bool) {
-        require(!awaitingMint.contains(tokenURI) || Minted.contains(tokenURI), "This token is already awaiting mint");
-        require(((amount*priceFeed.getLatestPrice())/1e25) >= minOffer, "Sent value is too low");
+        require(!awaitingMint.contains(tokenURI) && !Minted.contains(tokenURI), "NFT is already awaiting mint or minted");
+        require(((amount*priceFeed.getLatestPrice())/10e25) >= minOffer, "Sent value is too low");
         offerBalances[tokenURI] = bestOffer(payable(msg.sender), amount, block.timestamp);
         awaitingMint.add(tokenURI);
         bool success = WETH.transferFrom(msg.sender, address(this), amount);
