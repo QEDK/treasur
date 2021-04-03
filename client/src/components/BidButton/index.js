@@ -1,20 +1,29 @@
-import React from 'react'
-import { Button } from "@chakra-ui/react";
+import React from "react";
+import {Button} from "@chakra-ui/react";
 import {PlusSquareIcon} from "@chakra-ui/icons";
 
 const index = ({text}) => {
-    return (
-        <Button style={bidButton} leftIcon={<PlusSquareIcon />} variant="solid">
-                {text}
-              </Button>
-    )
-}
+  return (
+    <div style={container}>
+    <Button style={bidButton} leftIcon={<PlusSquareIcon />} variant="solid">
+      {text}
+    </Button>
+    </div>
+  );
+};
 
 const bidButton = {
-    borderRadius: "10px",
-    background: "linear-gradient(145deg, #e6e6e6, #ffffff)",
-    boxShadow: `20px 20px 60px #d9d9d9,
-                -20px -20px 60px #ffffff`,
-  };
+  width: "80%",
+  borderRadius: "8px",
+  background: "#2F2F31",
+  color: "white",
+  marginBottom: "10px"
+};
 
-export default index
+const container = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center"
+}
+
+export default index;

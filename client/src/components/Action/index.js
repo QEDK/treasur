@@ -5,6 +5,7 @@ import BidButton from '../BidButton';
 const index = () => {
     const property = {
         latestBid: 0.69,
+        // Add a string if there's no auction.
         AuctionEndTime: "April 4 2021, 17:00 Hrs"
     }
     return (

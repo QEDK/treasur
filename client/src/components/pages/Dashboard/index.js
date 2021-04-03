@@ -3,11 +3,11 @@ import {Container, Grid, GridItem} from "@chakra-ui/react";
 
 import NFT from "../../NFT";
 import Action from '../../Action'
+import Information from '../../Information'
 
 const index = () => {
   return (
     <>
-      <h1>Let's go begin the dashboard</h1>
       <Grid
         h="800px"
         templateRows="repeat(2, 1fr)"
@@ -27,6 +27,7 @@ const index = () => {
                 TODO: Add the rest of the page here 
               */}
               <Action />
+              <Information />
         </GridItem>
       </Grid>
     </>
