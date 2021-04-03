@@ -5,17 +5,16 @@ import {
   GridItem,
   Center,
   Text,
-  Button,
   Image,
   HStack,
   Box,
   Avatar,
   VStack,
 } from "@chakra-ui/react";
-import {PlusSquareIcon} from "@chakra-ui/icons";
 import {IoMdThumbsDown, IoMdThumbsUp} from "react-icons/io";
 import {FaEthereum} from "react-icons/fa";
 import {Fade, AttentionSeeker, Zoom} from "react-awesome-reveal";
+import BidButton from '../BidButton';
 
 // TODO: Get URL, Price, Name as props
 // Make all the text generic
@@ -102,9 +101,10 @@ const Card = () => {
           </GridItem>
           <GridItem colSpan={2}>
             <AttentionSeeker effect="tada">
-              <Button style={bidButton} leftIcon={<PlusSquareIcon />} variant="solid">
+              {/* <Button style={bidButton} leftIcon={<PlusSquareIcon />} variant="solid">
                 Bid
-              </Button>
+              </Button> */}
+              <BidButton text="Bid" />
             </AttentionSeeker>
           </GridItem>
         </Grid>
