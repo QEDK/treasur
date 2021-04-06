@@ -15,9 +15,10 @@ const index = ({text}) => {
 const bidButton = {
   width: "80%",
   borderRadius: "8px",
-  background: "#2F2F31",
+  background: "#281A03",
   color: "white",
-  marginBottom: "10px"
+  marginBottom: "10px",
+  boxShadow: "15px 15px 27px #e1e1e3, -15px -15px 27px #ffffff",
 };
 
 const container = {
