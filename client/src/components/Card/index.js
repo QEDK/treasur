@@ -12,7 +12,6 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import {IoMdThumbsDown, IoMdThumbsUp} from "react-icons/io";
-import {FaEthereum} from "react-icons/fa";
 import {Fade, AttentionSeeker, Zoom} from "react-awesome-reveal";
 import BidButton from '../BidButton';
 
@@ -52,18 +51,6 @@ const Card = () => {
               <Zoom>
                 <Text>
                   <b>$420</b>{" "}
-                  {/*
-                  TODO: Fix Ethereum price
-                  */}
-                  <HStack spacing="0.1em">
-                    {" "}
-                    <Box w="50px" h="40px">
-                      <FaEthereum />
-                    </Box>
-                    <Box w="50px" h="40px">
-                      0.003
-                    </Box>
-                  </HStack>
                 </Text>
               </Zoom>
             </VStack>
@@ -131,10 +118,4 @@ const likes = {
   marginLeft: "1rem",
 };
 
-const bidButton = {
-  borderRadius: "10px",
-  background: "linear-gradient(145deg, #e6e6e6, #ffffff)",
-  boxShadow: `20px 20px 60px #d9d9d9,
-              -20px -20px 60px #ffffff`,
-};
 export default Card;
