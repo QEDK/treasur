@@ -1,6 +1,8 @@
 import React from "react";
 import {HStack, Button} from "@chakra-ui/react";
 import { AiOutlineShopping } from "react-icons/ai";
+import Login from '../Login'
+import Logout from '../Logout'
 const index = () => {
   return (
     <>
@@ -9,10 +11,10 @@ const index = () => {
           Marketplace
         </Button>
         <Button style={navButton} variant="outline">
-          Mint
+          <Logout />
         </Button>
         <Button style={navButton} variant="ghost">
-          Idk Buffer
+          <Login />
         </Button>
       </HStack>
     </>
