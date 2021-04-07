@@ -2,6 +2,7 @@ import React from 'react'
 import Web3 from "web3";
 import Web3Modal from "web3modal";
 import { Button } from "@chakra-ui/react";
+import { IoIosWallet } from "react-icons/io";
 // import WalletConnectProvider from "@walletconnect/web3-provider";
 
 
@@ -33,7 +34,7 @@ const index = () => {
     
     return (
         <div>
-           <Button onClick={setupWallet}>Connect wallet</Button> 
+           <Button leftIcon={<IoIosWallet />} onClick={setupWallet}>Connect wallet</Button> 
         </div>
     )
 }
