@@ -3,10 +3,11 @@ import CardList from "../../CardList";
 import Navbar from '../../Navbar';
 import {VStack, Box, Center } from "@chakra-ui/react";
 import logo1 from "../../../assets/Logo.png";
-
+import Web3Connect from '../../Web3Connect'
 const index = () => {
   return (
     <div style={centerContainer}>
+      <Web3Connect />
       <VStack>
         <Center>
             <VStack>
