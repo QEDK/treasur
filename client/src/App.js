@@ -1,8 +1,8 @@
 import "./App.css";
 
-import {ChakraProvider, extendTheme, Container} from "@chakra-ui/react";
+import {ChakraProvider, extendTheme} from "@chakra-ui/react";
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import CardList from "./components/CardList";
+import Homepage from './components/pages/Homepage';
 import Dashboard from './components/pages/Dashboard';
 import Fonts from './assets/Fonts';
 
@@ -24,9 +24,9 @@ function App() {
         <Dashboard />
       </Route>
       <Route path='/'>
-      <Container maxW="container.lg" centerContent>
-      <CardList />
-      </Container>
+
+        <Homepage />
+
       </Route>
       </Switch>
       </Router>

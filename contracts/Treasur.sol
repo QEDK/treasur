@@ -73,8 +73,9 @@ contract Treasur is Ownable, IERC721Receiver {
     // Mainnet: 0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619
     // Testnet: 0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa
     IERC20 WETH = IERC20(0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1); // WETH (PoS)
-    YTV721 YTV = YTV721(0x1D5E5B831919B987fB7b3612DdAF85b70B41386A);
+    YTV721 YTV = YTV721(0x30235F88dD53bb2c71ffD2C52a756aB798381857);
     ChainlinkFeed priceFeed = new ChainlinkFeed();
+    mapping (bytes32 => uint256) tokenMap;
     mapping (bytes32 => bestOffer) offerBalances; // URI: address: balance: timestamp
     mapping (bytes32 => bestOffer) marketBalances;
     mapping (bytes32 => Listing) marketDetails;
@@ -90,8 +91,8 @@ contract Treasur is Ownable, IERC721Receiver {
     uint16 sellerFee = 925;
     uint256 minOfferTime = 1 weeks;
     uint256 minMarketTime = 1 weeks;
-    uint16 minOffer = 10; // upto 65535 USD
-    uint16 minBidGlobal = 10;
+    uint16 minOffer = 5; // upto 65535 USD
+    uint16 minBidGlobal = 5;
 
     event ReceivedExternal(address indexed addr, uint256 amount);
     event Refund(address indexed addr, uint256 amount);
@@ -113,6 +114,11 @@ contract Treasur is Ownable, IERC721Receiver {
         return true;
     }
 
+    function setMarketTime(uint256 _minOfferTime, uint256 _minMarketTime) external onlyOwner {
+        minOfferTime = _minOfferTime;
+        minMarketTime = _minMarketTime;
+    }
+
     function withdraw() external onlyOwner payable {
        payable(owner()).transfer(address(this).balance);
     }
@@ -125,12 +131,30 @@ contract Treasur is Ownable, IERC721Receiver {
         WETH = _WETH;
     }
 
-    function onERC721Received(address operator, address from, uint256 tokenId, bytes calldata data) external pure override returns (bytes4) {
+    function setNFT(YTV721 _YTV) external onlyOwner {
+        YTV = _YTV;
+    }
+
+    function onERC721Received(
+        address /* operator */, address /* from */, uint256 /* tokenId */, bytes calldata /* data */
+        ) external pure override returns (bytes4) {
         return this.onERC721Received.selector;
     }
 
     function chainLinkPrice() external view returns (uint) {
         return priceFeed.getLatestPrice();
+    }
+
+    function isOffered(bytes32 tokenURI) external view returns (bool) {
+        return awaitingMint.contains(tokenURI);
+    }
+
+    function isMinted(bytes32 tokenURI) external view returns (bool) {
+        return Minted.contains(tokenURI);
+    }
+
+    function isListed(bytes32 tokenURI) external view returns (bool) {
+        return Listed.contains(tokenURI);
     }
 
     function offer(bytes32 tokenURI, uint256 amount) external returns (bool) {
@@ -161,7 +185,6 @@ contract Treasur is Ownable, IERC721Receiver {
             bool success = WETH.transferFrom(msg.sender, address(this), amount);
             require(success, "Transaction was not approved");
         } else {
-            require(amount > offerBalances[tokenURI].value, "Sent value less than highest offer");
             require(((amount - offerBalances[tokenURI].value)*priceFeed.getLatestPrice()/10e25) >= 1, "Sent value does not meet differential");
             bestOffer memory refund = offerBalances[tokenURI];
             offerBalances[tokenURI] = bestOffer(payable(msg.sender), amount, refund.timestamp);
@@ -181,6 +204,7 @@ contract Treasur is Ownable, IERC721Receiver {
         delete offerBalances[tokenURI];
         withdrawableAmount += (top.value - ((creatorFee*top.value)/1000));
         uint256 tokenId = YTV.mintVideo(tokenURIStr, top.offerer);
+        tokenMap[tokenURI] = tokenId;
         bool success = WETH.transfer(tokenCreator, (creatorFee*top.value)/1000);
         require(success, "Not enough WETH in contract");
         emit Mint(top.offerer, tokenId, tokenURIStr);
@@ -196,9 +220,9 @@ contract Treasur is Ownable, IERC721Receiver {
         return true;
     }
 
-    function list(uint256 tokenId, uint256 bidAmount) external returns (bool) {
-        bytes32 tokenURI = _stringToBytes32(YTV.tokenURI(tokenId));
+    function list(bytes32 tokenURI, uint256 bidAmount) external returns (bool) {
         require(Minted.contains(tokenURI), "NFT has not been minted yet");
+        uint256 tokenId = tokenMap[tokenURI];
         require(msg.sender == YTV.ownerOf(tokenId), "Only the NFT owner can list");
         require(((bidAmount*priceFeed.getLatestPrice())/10e25) >= minBidGlobal, "Bid amount is too low");
         Listed.add(tokenURI);
@@ -208,14 +232,14 @@ contract Treasur is Ownable, IERC721Receiver {
         return true;
     }
 
-    function unlist(uint256 tokenId, bytes32 tokenURI) external returns (bool) {
+    function unlist(bytes32 tokenURI) external returns (bool) {
         require(Listed.contains(tokenURI), "NFT has not been listed for sale");
         require(msg.sender == marketDetails[tokenURI].owner, "Only NFT owner can unlist");
-        require(marketBalances[tokenURI].offerer != address(0), "NFT has bidders, cannot unlist");
+        require(marketBalances[tokenURI].offerer == address(0), "NFT has bidders, cannot unlist");
         Listed.remove(tokenURI);
         delete marketDetails[tokenURI];
         delete marketBalances[tokenURI];
-        YTV.safeTransferFrom(address(this), msg.sender, tokenId);
+        YTV.safeTransferFrom(address(this), msg.sender, tokenMap[tokenURI]);
         return true;
     }
 
@@ -223,7 +247,7 @@ contract Treasur is Ownable, IERC721Receiver {
         require(Listed.contains(tokenURI), "NFT has not been listed for sale");
         require(msg.sender == marketDetails[tokenURI].owner, "Only NFT owner can modify");
         require(((newBidAmount*priceFeed.getLatestPrice())/10e25) >= minOffer, "Bid amount is too low");
-        require(marketBalances[tokenURI].offerer != address(0), "Cannot modify ask after bids");
+        require(marketBalances[tokenURI].offerer == address(0), "Cannot modify ask after bids");
         marketDetails[tokenURI].minBid = newBidAmount;
         return true;
     }
@@ -231,7 +255,7 @@ contract Treasur is Ownable, IERC721Receiver {
     function bid(bytes32 tokenURI, uint256 amount) external returns (bool) {
         require(Listed.contains(tokenURI), "NFT has not been listed for sale");
         require(amount >= marketDetails[tokenURI].minBid, "Amount does not meet minimum bid");
-        require((((amount - marketBalances[tokenURI].value)*priceFeed.getLatestPrice())/10e25) >= 1, "Amount does not meet differntial");
+        require((((amount - marketBalances[tokenURI].value)*priceFeed.getLatestPrice())/10e25) >= 1, "Amount too low or doesn't meet differential");
         bestOffer memory refund = marketBalances[tokenURI];
         marketBalances[tokenURI] = bestOffer(msg.sender, amount, marketDetails[tokenURI].timestamp);
         bool success = WETH.transferFrom(msg.sender, address(this), amount);
@@ -245,7 +269,7 @@ contract Treasur is Ownable, IERC721Receiver {
     function closeMarket(bytes32 tokenURI) external onlyOwner returns (bool) {
         require(Listed.contains(tokenURI), "NFT has not been listed for sale");
         require((block.timestamp - marketDetails[tokenURI].timestamp) >= minMarketTime, "Market cannot be closed yet");
-        require(marketBalances[tokenURI].offerer == address(0), "NFT has no bidder, use unlist()");
+        require(marketBalances[tokenURI].offerer != address(0), "NFT has no bidder, use unlist()");
         Listed.remove(tokenURI);
         Listing memory details = marketDetails[tokenURI];
         bestOffer memory balance = marketBalances[tokenURI];
