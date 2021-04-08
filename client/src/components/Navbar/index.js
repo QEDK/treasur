@@ -8,7 +8,7 @@ import logo2 from "../../assets/logo2.svg";
 const index = () => {
   return (
     <>
-      <Flex direction="row" justify="space-evenly" wrap={true}>
+      <Flex direction="row" justify="flex-start" wrap={true}>
         <Box style={margin}>
           <Button leftIcon={<AiOutlineShopping />} style={navButton} variant="solid">
             Marketplace
@@ -32,7 +32,9 @@ const index = () => {
   );
 };
 
-const logoStyle = {}
+const logoStyle = {
+  width: "20rem"
+}
 const margin = {
   margin: "10px 1.5rem"
 };

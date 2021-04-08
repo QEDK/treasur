@@ -1,12 +1,15 @@
 import React from 'react'
 import Web3 from "web3";
 import Web3Modal from "web3modal";
+import { useDispatch } from 'react-redux';
 import { Button } from "@chakra-ui/react";
 import { IoIosWallet } from "react-icons/io";
 // import WalletConnectProvider from "@walletconnect/web3-provider";
 
 
 const index = () => {
+
+  const dispatch = useDispatch();
 
     const setupWallet = async () => {
         const providerOptions = {
