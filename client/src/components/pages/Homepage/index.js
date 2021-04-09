@@ -2,6 +2,7 @@ import React from "react";
 import CardList from "../../CardList";
 import Navbar from '../../Navbar';
 import {VStack, Box, Center } from "@chakra-ui/react";
+import TextField from '../../TextField'
 // import logo1 from "../../../assets/Logo.png";
 const index = () => {
   return (
@@ -18,6 +19,7 @@ const index = () => {
           <Box>
           <Navbar />
           </Box>
+          <TextField />
           </VStack>
         </Center>
         <Box>
