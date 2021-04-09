@@ -1,6 +1,6 @@
 import { WALLET } from '../type';
 
-const connect = (address) => {
+export const connect = (address) => {
     return{
         type: WALLET,
         payload: address
