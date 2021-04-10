@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { Input, Button } from '@chakra-ui/react';
 import { useSelector } from 'react-redux';
-import { YTVideoContract, TreasurContract, web3, IERC20Contract } from '../Web3Connect'
+import { YTVideoContract, TreasurContract, web3, IERC20Contract } from '../Web3Connect';
 const index = () => {
-    const { address } = useSelector((state) => state.connectWallet)
+    const { address } = useSelector((state) => state.connectWallet);
     const [url, setUrl] = useState('');
 
     const onChange = (e) => {
