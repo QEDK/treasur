@@ -14,7 +14,7 @@ const theme = extendTheme({
     heading:"Roboto",
   },
 })
-
+console.log(process.env)
 function App() {
   return (
     <ChakraProvider theme={theme}>
