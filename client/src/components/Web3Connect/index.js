@@ -9,10 +9,14 @@ import {IoIosWallet} from "react-icons/io";
 
 const YTVideo = require("../../config/YTVideo.json");
 const Treasur = require("../../config/Treasur.json");
+const IERC20 = require("../../config/IERC20.json");
+let IERC20Contract = null;
 let YTVideoContract = null;
 let TreasurContract = null;
+let web3 = null;
 const index = () => {
   const dispatch = useDispatch();
+  
   const setupWallet = async () => {
     const providerOptions = {
       //   walletconnect: {
@@ -30,7 +34,7 @@ const index = () => {
 
     const provider = await web3Modal.connect();
 
-    const web3 = new Web3(provider);
+     web3 = new Web3(provider);
 
     const matic = [
       {
@@ -85,6 +89,7 @@ const index = () => {
       Treasur,
       "0x8F4DD7dCBea687CabaADc604e66Be3d435B8715F"
     );
+    IERC20Contract = new web3.eth.Contract(IERC20, "0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1")
     dispatch(connect(address[0]));
   };
 
@@ -96,5 +101,5 @@ const index = () => {
     </div>
   );
 };
-export {YTVideoContract, TreasurContract};
+export { YTVideoContract, TreasurContract, web3, IERC20Contract };
 export default index;

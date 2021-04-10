@@ -6,7 +6,7 @@ import Homepage from './components/pages/Homepage';
 import Dashboard from './components/pages/Dashboard';
 import Fonts from './assets/Fonts';
 
-require('dotenv').config()
+
 
 const theme = extendTheme({
   fonts: {

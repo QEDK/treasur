@@ -1,24 +1,33 @@
 import React, { useState } from 'react'
 import { Input, Button } from '@chakra-ui/react';
-import { YTVideoContract, TreasurContract } from '../Web3Connect'
+import { useSelector } from 'react-redux';
+import { YTVideoContract, TreasurContract, web3, IERC20Contract } from '../Web3Connect'
 const index = () => {
+    const { address } = useSelector((state) => state.connectWallet)
     const [url, setUrl] = useState('');
 
     const onChange = (e) => {
         setUrl(e.target.value);
     }
 
-    const onSubmit = () => {
+    const onSubmit = async () => {
         // Call all the contract methods to check
         // if the video has been offered, listed or minted
         // if nothing out of these 3 then mint it.
         const yt_id = url.match(/^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]+).*/);
         if (yt_id !== null) {
             const tokenURI = web3.utils.utf8ToHex(yt_id[1]);
-            if(TreasurContract.methods.isOffered(tokenURI).call() ||
-                TreasurContract.methods.isMinted(tokenURI).call() ||
-                TreasurContract.methods.isListed(tokenURI).call()){
+            if(await TreasurContract.methods.isOffered(tokenURI).call() ||
+                await TreasurContract.methods.isMinted(tokenURI).call() ||
+                await TreasurContract.methods.isListed(tokenURI).call()){
+                // TODO: func calls returning promises
+                // await them then put in if block
                 console.log("Can't use this video, it's already there");
+            }else{
+                const approval = await IERC20Contract.methods.approve(TreasurContract.options.address, web3.utils.toWei("0.03", "ether")).send({"from": address})
+                const offer = await TreasurContract.methods.offer(tokenURI, web3.utils.toWei("0.03", "ether") ).send({"from": address})
+                console.log(approval)
+                console.log(offer)
             }
         } else {
             console.log("Invalid URL");
