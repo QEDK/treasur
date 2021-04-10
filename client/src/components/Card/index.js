@@ -87,12 +87,10 @@ const Card = () => {
             </HStack>
           </GridItem>
           <GridItem colSpan={2}>
-            <AttentionSeeker effect="tada">
               {/* <Button style={bidButton} leftIcon={<PlusSquareIcon />} variant="solid">
                 Bid
               </Button> */}
               <BidButton text="Bid" />
-            </AttentionSeeker>
           </GridItem>
         </Grid>
       </Fade>

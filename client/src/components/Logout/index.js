@@ -1,10 +1,14 @@
 import React from "react";
 import {GoogleLogout} from "react-google-login";
+import { useDispatch } from 'react-redux';
+import { signOut } from '../../store/actions/signInAction';
 
-const client_id = `1084414217627-siqkc8nv2m6b9hj8pv4prsrsmk6e5b4c.apps.googleusercontent.com`;
+const client_id = `${process.env.GOOGLE_CLIENT_ID}`;
 const index = () => {
+  const dispatch = useDispatch();
   const onSuccess = () => {
     console.log("Logout successful");
+    dispatch(signOut());
   };
   return (
     <div>
