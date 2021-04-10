@@ -12,14 +12,21 @@ const index = () => {
         // Call all the contract methods to check
         // if the video has been offered, listed or minted
         // if nothing out of these 3 then mint it.
-        console.log(url)
-            if(TreasurContract.methods. isOffered().call() || TreasurContract.methods.isMinted().call() || TreasurContract.methods.isListed().call()){
-                console.log("Can't use this video, it's already there")
+        const yt_id = url.match(/^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]+).*/);
+        if (yt_id !== null) {
+            const tokenURI = web3.utils.utf8ToHex(yt_id[1]);
+            if(TreasurContract.methods.isOffered(tokenURI).call() ||
+                TreasurContract.methods.isMinted(tokenURI).call() ||
+                TreasurContract.methods.isListed(tokenURI).call()){
+                console.log("Can't use this video, it's already there");
             }
+        } else {
+            console.log("Invalid URL");
+        }
     }
     return (
         <div>
-            <Input variant="flushed" placeholder="Enter Youtube URL here" focusBorderColor="red.300" width="180%" onChange={onChange}/>
+            <Input variant="flushed" placeholder="Enter YouTube URL here" focusBorderColor="red.300" width="180%" onChange={onChange}/>
             <Button style={mintButton} onClick={onSubmit}>Mint</Button>
         </div>
     )
