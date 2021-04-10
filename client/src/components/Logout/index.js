@@ -3,7 +3,7 @@ import {GoogleLogout} from "react-google-login";
 import { useDispatch } from 'react-redux';
 import { signOut } from '../../store/actions/signInAction';
 
-const client_id = `${process.env.GOOGLE_CLIENT_ID}`;
+const client_id = `${process.env.REACT_APP_GOOGLE_CLIENT_ID}`;
 const index = () => {
   const dispatch = useDispatch();
   const onSuccess = () => {

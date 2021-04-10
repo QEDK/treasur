@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import {signIn} from '../../store/actions/signInAction';
 import { refreshTokenSetup } from '../../utils/auth'
 
-const client_id = `"${process.env.GOOGLE_CLIENT_ID}"`;
+const client_id = `${process.env.REACT_APP_GOOGLE_CLIENT_ID}`;
 const index = () => {
   const dispatch = useDispatch();
 
