@@ -4,6 +4,7 @@ import {ChakraProvider, extendTheme} from "@chakra-ui/react";
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Homepage from './components/pages/Homepage';
 import Dashboard from './components/pages/Dashboard';
+import Offer from './components/pages/Offer';
 import Fonts from './assets/Fonts';
 
 
@@ -23,6 +24,9 @@ function App() {
         <Switch>
       <Route path='/nft'>
         <Dashboard />
+      </Route>
+      <Route path='/offer'>
+        <Offer />
       </Route>
       <Route path='/'>
 
