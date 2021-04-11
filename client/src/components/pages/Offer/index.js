@@ -15,16 +15,19 @@ import {
 const index = () => {
     const [price, setPrice] = useState(0)
     const { address } = useSelector((state) => state.connectWallet);
-    const { tokenURI, videoURL } = useSelector((state) => state.Video);
+    const { tokenURI } = useSelector((state) => state.Video);
     const handleOnChange = (e) => {
         setPrice(e.target.value);
     }
     const handleOnClick = async () => {
         const EthUsdPrice = await TreasurContract.methods.chainLinkPrice().call()
-        const EthPrice = 1/(EthUsdPrice * Math.pow(10, -8));
-        console.log(EthPrice)
-        const approval = await IERC20Contract.methods.approve(TreasurContract.options.address, web3.utils.toWei(`${EthPrice}`, "ether")).send({"from": address})
-        const offer = await TreasurContract.methods.offer(tokenURI, web3.utils.toWei(`${EthPrice}`, "ether") ).send({"from": address})
+        const EthPrice = price/(EthUsdPrice * Math.pow(10, -8)).toPrecision(8);
+        console.log(EthUsdPrice)
+        console.log(EthPrice.toPrecision(8))
+        console.log(TreasurContract.options.address)
+        console.log(web3.utils.toWei(`${EthPrice.toPrecision(8)}`, "ether"))
+        const approval = await IERC20Contract.methods.approve(TreasurContract.options.address, web3.utils.toWei(`${EthPrice.toPrecision(8)}`, "ether")).send({"from": address})
+        const offer = await TreasurContract.methods.offer(web3.utils.utf8ToHex(tokenURI), web3.utils.toWei(`${EthPrice.toPrecision(8)}`, "ether") ).send({"from": address})
         console.log(approval)
         console.log(offer)
     }
@@ -32,7 +35,7 @@ const index = () => {
     <div>
       <Container size="lg">
         <VStack>
-          <NFT url={videoURL} />
+          <NFT id={tokenURI} />
           <InputGroup>
             <InputLeftAddon children="$" />
             <Input placeholder="Enter Amount" onChange={handleOnChange} />
