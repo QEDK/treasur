@@ -15,7 +15,7 @@ import {
 const index = () => {
     const [price, setPrice] = useState(0)
     const { address } = useSelector((state) => state.connectWallet);
-    const { tokenURI, videoURL } = useSelector((state) => state.Video);
+    const { tokenURI } = useSelector((state) => state.Video);
     const handleOnChange = (e) => {
         setPrice(e.target.value);
     }
@@ -32,7 +32,7 @@ const index = () => {
     <div>
       <Container size="lg">
         <VStack>
-          <NFT url={videoURL} />
+          <NFT id={tokenURI} />
           <InputGroup>
             <InputLeftAddon children="$" />
             <Input placeholder="Enter Amount" onChange={handleOnChange} />
