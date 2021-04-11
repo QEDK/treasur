@@ -1,9 +1,9 @@
 import React from 'react'
 
-const index = ({url}) => {
-  if(!url){
-    url = "https://www.youtube.com/embed/tfSS1e3kYeo"
-  }
+const index = ({id}) => {
+
+    const url = `https://www.youtube.com/embed/${id}`
+    
     return (
         <iframe
         width="560"

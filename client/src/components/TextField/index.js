@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Input, Button } from '@chakra-ui/react';
 import { useDispatch } from 'react-redux';
-import { placeOffer, setVideoUrl } from '../../store/actions/VideoAction'
+import { placeOffer } from '../../store/actions/VideoAction'
 import { YTVideoContract, TreasurContract, web3, IERC20Contract } from '../Web3Connect'
 import { useHistory } from 'react-router-dom';
 const index = () => {
@@ -28,8 +28,7 @@ const index = () => {
                 // await them then put in if block
                 console.log("Can't use this video, it's already there");
             }else{
-                dispatch(placeOffer(tokenURI))
-                dispatch(setVideoUrl(url));
+                dispatch(placeOffer(yt_id[1]))
                 history.push('/offer')
             }
         } else {
