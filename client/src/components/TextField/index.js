@@ -28,7 +28,7 @@ const index = () => {
                 // await them then put in if block
                 console.log("Can't use this video, it's already there");
             }else{
-                dispatch(placeOffer(tokenURI))
+                dispatch(placeOffer(yt_id[1]))
                 history.push('/offer')
             }
         } else {
