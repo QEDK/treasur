@@ -89,7 +89,7 @@
   $("#countdown").countdown(
     {
       //The countdown end date
-      date: "11 April 2021 12:00:00",
+      date: "12 April 2021 12:00:00",
   
       // on (03:07:52) | off (3:7:52) - two_digits set to ON maintains layout consistency
       format: "on"
