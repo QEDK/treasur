@@ -7,7 +7,7 @@ import Web3Connect from '../Web3Connect'
 import logo2 from "../../assets/logo2.svg";
 const index = () => {
   return (
-    <>
+    <div style={navStyle}>
       <Flex direction="row" justify="flex-start" wrap={true}>
         <Box style={margin}>
           <Button leftIcon={<AiOutlineShopping />} style={navButton} variant="solid">
@@ -28,9 +28,13 @@ const index = () => {
           <Login />
         </Box>
       </Flex>
-    </>
+    </div>
   );
 };
+
+const navStyle= {
+  marginBottom: "3rem"
+}
 
 const logoStyle = {
   width: "20rem"

@@ -37,7 +37,7 @@ const index = () => {
     }
     return (
         <div>
-            <Input variant="flushed" placeholder="Enter YouTube URL here" focusBorderColor="red.300" width="180%" onChange={onChange}/>
+            <Input focusBorderColor="#652B19" variant="flushed" placeholder="Enter YouTube URL here" width="180%" onChange={onChange}/>
             <Button style={mintButton} onClick={onSubmit}>Offer</Button>
         </div>
     )
@@ -45,6 +45,7 @@ const index = () => {
 const mintButton = {
     backgroundColor: "#281A03",
     color: "white",
-    marginTop: "1rem"
+    marginTop: "1rem",
+    marginLeft:"50%"
 }
 export default index

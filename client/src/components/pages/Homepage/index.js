@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import CardList from "../../CardList";
-import Navbar from '../../Navbar';
 import {VStack, Box, Center } from "@chakra-ui/react";
 import TextField from '../../TextField';
 import { useSelector } from 'react-redux';
-// import logo1 from "../../../assets/Logo.png";
 const index = () => {
   const { address } = useSelector((state) => state.connectWallet);
   useEffect(() => {
@@ -15,14 +13,7 @@ const index = () => {
       <VStack>
         <Center>
             <VStack>
-          {/* <Box w="100%" h="40%">
-              <img src={logo1} style={logo} />
-
-            <Heading style={{fontFamily: " Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif"}}>Treasur</Heading>
-                <Text>TOKENIZE VIDEOS AS COLLECTIBLES AND SHOW OFF YOUR TRUE FANHOOD․</Text>
-          </Box> */}
           <Box>
-          <Navbar />
           </Box>
           <TextField />
           </VStack>
