@@ -33,10 +33,14 @@ app.post("/mint", async (req, res) => {
     const {tokenUri, tokenURIStr, tokenCreator} = req.body;
     const rv = await TreasurContract.methods
       .approveMint(tokenUri, tokenURIStr, tokenCreator)
-      .send({from: "0xd1058ECCEE8102Bb8C1A7390b7d6Ea2CB6dA8E0e"});
+      .send({
+        from: "0xd1058ECCEE8102Bb8C1A7390b7d6Ea2CB6dA8E0e",
+        gasPrice: "20",
+        gas: "200000",
+      });
     res.send(rv);
   } catch (e) {
-    console.error(e)
+    console.error(e);
   }
 });
 app.listen(8080);
