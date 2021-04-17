@@ -7,11 +7,9 @@ import {
   Container,
   Input,
   InputGroup,
-  InputLeftAddon,
   VStack,
-  HStack,
-  Box,
   Button,
+  InputLeftElement
 } from "@chakra-ui/react";
 const index = () => {
   const [price, setPrice] = useState(0);
@@ -51,9 +49,9 @@ const index = () => {
       <Container size="lg">
         <VStack>
           <NFT id={tokenURI} />
-          <InputGroup>
-            <InputLeftAddon children="$" />
-            <Input placeholder="Enter Amount" onChange={handleOnChange} />
+          <InputGroup style={input}>
+            <InputLeftElement children="$" />
+            <Input focusBorderColor="#652B19" placeholder="Enter Amount" onChange={handleOnChange} />
           </InputGroup>
           <Button style={mintButton} onClick={handleOnClick}>
             Place Offer
@@ -63,6 +61,10 @@ const index = () => {
     </div>
   );
 };
+
+const input = {
+  marginTop: "2rem"
+}
 const mintButton = {
   backgroundColor: "#281A03",
   color: "white",

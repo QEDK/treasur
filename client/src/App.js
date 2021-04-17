@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Homepage from './components/pages/Homepage';
 import Dashboard from './components/pages/Dashboard';
 import Offer from './components/pages/Offer';
+import Navbar from './components/Navbar';
 import Fonts from './assets/Fonts';
 
 
@@ -20,6 +21,7 @@ function App() {
   return (
     <ChakraProvider theme={theme}>
        <Fonts />
+       <Navbar />
       <Router>
         <Switch>
       <Route path='/nft'>
