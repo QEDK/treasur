@@ -5,7 +5,7 @@ const path = require("path");
 const app = express();
 // var web3 = new Web3('https://rpc-mainnet.maticvigil.com/');
 var web3 = new Web3(
-  new Web3.providers.HttpProvider("https://rpc-mainnet.maticvigil.com/")
+  new Web3.providers.HttpProvider("https://rpc-mumbai.maticvigil.com/")
 );
 const account = web3.eth.accounts.privateKeyToAccount(process.env.PRIVATE_KEY);
 
@@ -34,9 +34,7 @@ app.post("/mint", async (req, res) => {
     const rv = await TreasurContract.methods
       .approveMint(tokenUri, tokenURIStr, tokenCreator)
       .send({
-        from: "0xd1058ECCEE8102Bb8C1A7390b7d6Ea2CB6dA8E0e",
-        gasPrice: "20",
-        gas: "200000",
+        from: "0xd1058ECCEE8102Bb8C1A7390b7d6Ea2CB6dA8E0e"
       });
     res.send(rv);
   } catch (e) {
