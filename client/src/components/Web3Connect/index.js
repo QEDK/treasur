@@ -87,7 +87,7 @@ const index = () => {
     );
     TreasurContract = new web3.eth.Contract(
       Treasur,
-      "0x8F4DD7dCBea687CabaADc604e66Be3d435B8715F"
+      "0x54b327694d71596128064b495C70Fe9F0d2919ad"
     );
     IERC20Contract = new web3.eth.Contract(IERC20, "0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1")
     dispatch(connect(address[0]));
