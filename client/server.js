@@ -31,11 +31,14 @@ app.get("/", (req, res) => {
 app.post("/mint", async (req, res) => {
   try {
     const {tokenUri, tokenURIStr, tokenCreator} = req.body;
+    console.log(tokenUri, tokenURIStr, tokenCreator);
     const rv = await TreasurContract.methods
       .approveMint(tokenUri, tokenURIStr, tokenCreator)
       .send({
-        from: "0xd1058ECCEE8102Bb8C1A7390b7d6Ea2CB6dA8E0e"
+        from: "0xd1058ECCEE8102Bb8C1A7390b7d6Ea2CB6dA8E0e",
+        gas: "500000"
       });
+    console.log(rv);
     res.send(rv);
   } catch (e) {
     console.error(e);
