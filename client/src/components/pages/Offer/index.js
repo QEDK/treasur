@@ -1,8 +1,10 @@
 import React, {useState} from "react";
 import axios from "axios";
+import { useHistory } from 'react-router-dom';
 import NFT from "../../NFT";
 import {TreasurContract, web3, IERC20Contract} from "../../Web3Connect";
-import {useSelector} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
+import { addVideo } from '../../../store/actions/VideoAction'
 import {
   Container,
   Input,
@@ -13,8 +15,10 @@ import {
 } from "@chakra-ui/react";
 const index = () => {
   const [price, setPrice] = useState(0);
+  const dispatch = useDispatch();
+  let history = useHistory();
   const {address} = useSelector((state) => state.connectWallet);
-  const {tokenURI} = useSelector((state) => state.Video);
+  const {tokenURI} = useSelector((state) => state.video);
   const handleOnChange = (e) => {
     setPrice(e.target.value);
   };
@@ -39,7 +43,8 @@ const index = () => {
         tokenURIStr: tokenURI,
         tokenCreator: address,
       });
-      console.log(tokenId);
+      dispatch(addVideo(tokenURI))
+      history.push(`/nft/${tokenURI}`)
     } catch (error) {
       console.log(error);
     }

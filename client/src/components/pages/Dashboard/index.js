@@ -1,11 +1,13 @@
 import React from "react";
 import {Container, Grid, GridItem} from "@chakra-ui/react";
-
+import { useParams } from 'react-router-dom';
 import NFT from "../../NFT";
 import Action from '../../Action'
 import Information from '../../Information'
 
-const index = () => {
+const index = (props) => {
+  const { tokenURI } = useParams();
+  console.log(tokenURI)
   return (
     <>
       <Grid
@@ -19,7 +21,7 @@ const index = () => {
             {/* 
                 TODO: Change src to dynamic via props or state
               */}
-            <NFT />
+            <NFT id={tokenURI} />
           </GridItem>
         </Container>
         <GridItem colSpan={2} >

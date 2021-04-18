@@ -8,15 +8,13 @@ import Offer from './components/pages/Offer';
 import Navbar from './components/Navbar';
 import Fonts from './assets/Fonts';
 
-
-
 const theme = extendTheme({
   fonts: {
     body: "Roboto",
     heading:"Roboto",
   },
 })
-console.log(process.env)
+
 function App() {
   return (
     <ChakraProvider theme={theme}>
@@ -24,7 +22,7 @@ function App() {
        <Navbar />
       <Router>
         <Switch>
-      <Route path='/nft'>
+      <Route path='/nft/:tokenURI'>
         <Dashboard />
       </Route>
       <Route path='/offer'>
