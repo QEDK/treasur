@@ -19,6 +19,7 @@ import {
   InputLeftElement,
   Input,
 } from "@chakra-ui/react";
+import Timer from '../Timer'
 import BidButton from "../BidButton";
 
 const index = () => {
@@ -26,7 +27,7 @@ const index = () => {
   const property = {
     latestBid: 0.69,
     // Add a string if there's no auction.
-    AuctionEndTime: "April 4 2021, 17:00 Hrs",
+    AuctionEndTime: "April 20 2021, 15:37:25",
   };
   return (
     <div style={boxStyle}>
@@ -41,6 +42,7 @@ const index = () => {
           {/* 
                     Discuss with Ankit about this functionality
                 */}
+                <Timer endDate={property.AuctionEndTime} />
         </Box>
       </SimpleGrid>
       {/* <BidButton text="Place a bid" /> */}
