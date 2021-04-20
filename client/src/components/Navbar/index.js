@@ -1,11 +1,30 @@
-import React from "react";
-import {Flex, Button, Box, Spacer} from "@chakra-ui/react";
+import React, { useEffect } from "react";
+import {Flex, Button, Box, Spacer, useToast } from "@chakra-ui/react";
+import { useSelector } from 'react-redux';
 import {AiOutlineShopping} from "react-icons/ai";
 import Login from "../Login";
 import Logout from "../Logout";
 import Web3Connect from '../Web3Connect'
 import logo2 from "../../assets/logo2.svg";
 const index = () => {
+
+  const { givenName } = useSelector((state) => state.signIn)
+  const toast = useToast();
+
+  useEffect(() => {
+
+    if(givenName){
+      return toast({
+        title: "Authorization Succesful.",
+        description: "You've been successfully logged in.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top-right"
+      })
+
+    }
+  }, [givenName])
   return (
     <div style={navStyle}>
       <Flex direction="row" justify="flex-start" wrap={true}>
