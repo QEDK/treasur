@@ -17,7 +17,7 @@ import BidButton from '../BidButton';
 
 // TODO: Get URL, Price, Name as props
 // Make all the text generic
-const Card = () => {
+const Card = ({ URI }) => {
   return (
     <div>
       <Fade cascade>
@@ -38,7 +38,7 @@ const Card = () => {
                */}
               <Image
                 style={thumbnail}
-                src="https://img.youtube.com/vi/tfSS1e3kYeo/hqdefault.jpg"
+                src={`https://img.youtube.com/vi/${URI}/hqdefault.jpg`}
                 objectFit="cover"
               />
             </Center>

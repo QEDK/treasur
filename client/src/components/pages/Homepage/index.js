@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import CardList from "../../CardList";
 import {VStack, Box, Center } from "@chakra-ui/react";
 import TextField from '../../TextField';
 import { useSelector } from 'react-redux';
 const index = () => {
   const { address } = useSelector((state) => state.connectWallet);
+ 
   useEffect(() => {
     const inventoryapi = `https://api.covalenthq.com/v1/80001/address/${address}/balances_v2/?nft=true&no-nft-fetch=false`;
   }, []);

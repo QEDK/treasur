@@ -38,7 +38,6 @@ app.post("/mint", async (req, res) => {
         from: "0xd1058ECCEE8102Bb8C1A7390b7d6Ea2CB6dA8E0e",
         gas: "500000"
       });
-    console.log(rv);
     res.send(rv);
   } catch (e) {
     console.error(e);

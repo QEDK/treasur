@@ -1,7 +1,8 @@
-import { PLACE_OFFER } from '../type';
+import { PLACE_OFFER, ADD_VIDEO } from '../type';
 
 const initialState = {
-    tokenURI: null
+    tokenURI: null,
+    videos: []
 }
  const reducer = (state = initialState, action) => {
 
@@ -10,6 +11,12 @@ const initialState = {
             return{
                 ...state,
                 tokenURI: action.payload
+            }
+
+        case ADD_VIDEO:
+            return {
+                ...state,
+                videos: [...state.videos, action.payload]
             }
 
 

@@ -7,7 +7,7 @@ import Video from './reducers/Video'
 const reducer = combineReducers({
     signIn,
     connectWallet,
-    Video
+    video: Video
 });
 
 const store = configureStore({
