@@ -13,6 +13,19 @@ const theme = extendTheme({
     body: "Roboto",
     heading:"Roboto",
   },
+  colors: {
+    brand: {
+      100: "#281A03",
+      200: "#281A03",
+      300: "#281A03",
+      400: "#281A03",
+      500: "#281A03",
+      600: "#281A03",
+      700: "#281A03",
+      800: "#281A03",
+      900: "#281A03",
+    }
+  }
 })
 
 function App() {

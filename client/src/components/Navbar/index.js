@@ -5,15 +5,16 @@ import {AiOutlineShopping} from "react-icons/ai";
 import Login from "../Login";
 import Logout from "../Logout";
 import Web3Connect from '../Web3Connect'
+import UserMenu from '../UserMenu'
 import logo2 from "../../assets/logo2.svg";
 const index = () => {
 
-  const { givenName } = useSelector((state) => state.signIn)
+  const { isAuthenticated, givenName, avatar } = useSelector((state) => state.signIn)
   const toast = useToast();
 
   useEffect(() => {
 
-    if(givenName){
+    if(isAuthenticated){
       return toast({
         title: "Authorization Succesful.",
         description: "You've been successfully logged in.",
@@ -24,7 +25,7 @@ const index = () => {
       })
 
     }
-  }, [givenName])
+  }, [isAuthenticated])
   return (
     <div style={navStyle}>
       <Flex direction="row" justify="flex-start" wrap={true}>
@@ -40,11 +41,11 @@ const index = () => {
         <img src={logo2} style={logoStyle} />
         <Spacer />
         <Box style={margin}>
-          <Logout />
+          {isAuthenticated ? <Logout /> : <Login />}
         </Box>
         <Spacer />
         <Box style={margin}>
-          <Login />
+         {isAuthenticated && <UserMenu name={givenName} picture={avatar}/>}
         </Box>
       </Flex>
     </div>
