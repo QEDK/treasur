@@ -6,7 +6,7 @@ const index = () => {
         <div style={boxStyle}>
             <HStack spacing="20px">
                 <Box style={innerBoxStyle} w="5rem">
-                    <Avatar name="Sam Hawkz" />
+                    <Avatar name="Sarthak Kundra" />
                 </Box>
                 <Box style={innerBoxStyle} w="25rem">
                     {/* 
@@ -15,12 +15,12 @@ const index = () => {
                         Type = "Listed" ? Listed by {name}
                     */}
                     <Text fontSize="1.3rem">
-                        Bid placed by Sam Hawkz
+                        Video put up for auction
                     </Text>
                 </Box>
                 <Box style={innerBoxStyle} w="10rem">
                     <Text fontSize="1.8rem">
-                        0.175 Matic
+                        $5
                     </Text>
                 </Box>
             </HStack>

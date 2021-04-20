@@ -3,6 +3,8 @@ import {
   Container,
   Grid,
   GridItem,
+  HStack,
+  Box
 } from "@chakra-ui/react";
 import {useParams} from "react-router-dom";
 import NFT from "../../NFT";
@@ -32,8 +34,14 @@ const index = () => {
           {/* 
                 TODO: Add the rest of the page here 
               */}
+              <HStack>
+                <Box>
           <Action />
+          </Box>
+          <Box>
           <Information />
+          </Box>
+          </HStack>
         </GridItem>
       </Grid>
     </>

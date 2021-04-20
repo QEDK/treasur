@@ -27,15 +27,15 @@ const index = () => {
   const property = {
     latestBid: 0.69,
     // Add a string if there's no auction.
-    AuctionEndTime: "April 20 2021, 15:37:25",
+    AuctionEndTime: "April 26 2021, 23:23:38",
   };
   return (
     <div style={boxStyle}>
       <SimpleGrid columns={2} spacing={10}>
         <Box style={innerBox}>
-          <Text fontSize="1rem">Current Bid</Text>
-          <Text fontSize="1.8rem">No bids</Text>
-          <Text fontSize="1.3rem">$0</Text>
+          <Text fontSize="1rem">Current Offer</Text>
+          <Text fontSize="1.8rem">$5</Text>
+          <Text fontSize="1.3rem">0.0023 WETH</Text>
         </Box>
         <Box style={innerBox}>
           <Text fontSize="1.8rem">Time to end</Text>
@@ -61,7 +61,7 @@ const index = () => {
                   <Box>
             <Alert status="warning">
               <AlertIcon />
-              This money deducted will not be returned if you're the highest bidder.
+              This money will be deducted and will only be returned if there's a higher bid than your amount.
             </Alert>
             </Box>
             <Box>
@@ -82,7 +82,7 @@ const index = () => {
             <Button variant="ghost" mr={3} onClick={onClose}>
               Close
             </Button>
-            <Button colorScheme="red">Place bid</Button>
+            <Button colorScheme="blackAlpha">Place bid</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
