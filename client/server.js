@@ -43,9 +43,16 @@ app.post("/mint", async (req, res) => {
         from: "0xd1058ECCEE8102Bb8C1A7390b7d6Ea2CB6dA8E0e",
         gas: "500000"
       });
-    res.send(rv);
+    console.log(rv);
+    if (rv.status) {
+      const queryText = `INSERT INTO YTokens(yt_id, tokenid, status, owner, creator) VALUES('${tokenURIStr}',\
+        ${rv.events.Mint.returnValues.tokenId}, 'minted', '${rv.events.Mint.returnValues.addr}', '${tokenCreator}')`
+      client.query(queryText).then(console.log);
+      res.send(rv);
+    }
   } catch (e) {
-    console.error(e);
+    console.log(e);
+    res.send(e);
   }
 });
 app.listen(8080);
