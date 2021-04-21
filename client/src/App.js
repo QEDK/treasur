@@ -4,7 +4,7 @@ import {ChakraProvider, extendTheme} from "@chakra-ui/react";
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Homepage from './components/pages/Homepage';
 import Dashboard from './components/pages/Dashboard';
-import Offer from './components/pages/Offer';
+import Offer from './components/pages/List';
 import Navbar from './components/Navbar';
 import Fonts from './assets/Fonts';
 

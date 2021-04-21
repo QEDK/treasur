@@ -62,7 +62,7 @@ const index = () => {
         onChange={onChange}
       />
       <Button style={mintButton} onClick={onSubmit}>
-        Offer
+        List
       </Button>
     </div>
   );
