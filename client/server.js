@@ -2,6 +2,15 @@ require("dotenv").config();
 const express = require("express");
 const Web3 = require("web3");
 const path = require("path");
+const { Client } = require('pg');
+const client = new Client({
+  user: process.env.PGUSER,
+  host: process.env.PGHOST,
+  database: process.env.PGDATABASE,
+  password: process.env.PGPASSWORD,
+  port: 5432,
+})
+client.connect();
 const app = express();
 // var web3 = new Web3('https://rpc-mainnet.maticvigil.com/');
 var web3 = new Web3(
@@ -19,10 +28,6 @@ const TreasurContract = new web3.eth.Contract(
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "build")));
-
-app.get("/ping", (req, res) => {
-  return res.send("pong");
-});
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "build", "index.html"));
