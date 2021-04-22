@@ -37,6 +37,13 @@ const index = () => {
         web3.utils.toWei(`${EthPrice.toPrecision(8)}`, "ether")
       )
       .send({from: address});
+      try {
+        await axios.post("/offer", {
+          tokenURIStr: tokenURI
+        })
+      } catch (error) {
+        console.log(error)
+      }
     try {
       const tokenId = await axios.post("/mint", {
         tokenUri: web3.utils.utf8ToHex(tokenURI),

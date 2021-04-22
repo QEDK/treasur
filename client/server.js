@@ -34,6 +34,7 @@ app.get("/", (req, res) => {
 });
 
 app.post("/offer", async (req, res) => {
+  const {tokenURIStr} = req.body;
   try {
     const queryText = `INSERT INTO YTokens(yt_id, status) VALUES('${tokenURIStr}', 'offered')`;
     client.query(queryText).then(console.log);
@@ -57,7 +58,7 @@ app.post("/mint", async (req, res) => {
     console.log(rv);
     if (rv.status) {
       const queryText = `UPDATE YTokens SET tokenid = ${rv.events.Mint.returnValues.tokenId}, status = 'minted',\
-        owner = '${rv.events.Mint.returnValues.addr}', creator = '${tokenCreator}') WHERE yt_id = '${tokenURIStr}'`;
+        owner = '${rv.events.Mint.returnValues.addr}', creator = '${tokenCreator}' WHERE yt_id = '${tokenURIStr}'`;
       client.query(queryText).then(console.log);
       res.send(rv);
     }
