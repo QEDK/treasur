@@ -43,6 +43,7 @@ const index = () => {
         tokenURIStr: tokenURI,
         tokenCreator: address,
       });
+      console.log(`rv from mint ${tokenId}`)
       dispatch(addVideo(tokenURI))
       history.push(`/nft/${tokenURI}`)
     } catch (error) {
@@ -59,7 +60,7 @@ const index = () => {
             <Input focusBorderColor="#652B19" placeholder="Enter Amount" onChange={handleOnChange} />
           </InputGroup>
           <Button style={mintButton} onClick={handleOnClick}>
-            Place Offer
+            Confirm Listing
           </Button>
         </VStack>
       </Container>

@@ -4,6 +4,7 @@ const initialState = {
     givenName: null,
     email: null,
     avatar: null,
+    isAuthenticated: false
 }
 
 const reducer = (state = initialState, action) => {
@@ -13,14 +14,16 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 givenName: action.payload.givenName,
                 email: action.payload.email,
-                avatar: action.payload.imageUrl
+                avatar: action.payload.imageUrl,
+                isAuthenticated: true
             }
         case SIGN_OUT:
             return {
                 ...state,
                 givenName: null,
                 email: null,
-                avatar: null
+                avatar: null,
+                isAuthenticated: false
             }
         default:
             return state;

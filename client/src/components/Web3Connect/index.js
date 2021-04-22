@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Web3 from "web3";
 import Web3Modal from "web3modal";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {connect} from "../../store/actions/connectWalletAction";
-import {Button} from "@chakra-ui/react";
+import {Button, useToast} from "@chakra-ui/react";
 import {IoIosWallet} from "react-icons/io";
 // import WalletConnectProvider from "@walletconnect/web3-provider";
 
@@ -14,9 +14,36 @@ let IERC20Contract = null;
 let YTVideoContract = null;
 let TreasurContract = null;
 let web3 = null;
+
 const index = () => {
   const dispatch = useDispatch();
-  
+  const toast = useToast();
+  const { address } = useSelector((state) => state.connectWallet);
+
+  useEffect(() => {
+
+    if(address) {
+      return(toast({
+        title: "Web3 Wallet Connected",
+        description: "Your MetaMask wallet is connected successfully.",
+        status: "success",
+        duration: 4000,
+        isClosable: true,
+        position: "top-right"
+      })
+      )
+    }else {
+      return(toast({
+        title: "Web3 Wallet Disconnected",
+        description: "Your MetaMask wallet is not connected.",
+        status: "warning",
+        duration: 4000,
+        isClosable: true,
+        position: "top-right"
+      })
+)
+    }
+  }, [address])
   const setupWallet = async () => {
     const providerOptions = {
       //   walletconnect: {
