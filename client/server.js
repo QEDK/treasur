@@ -33,6 +33,17 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
+app.post("/offer", async (req, res) => {
+  try {
+    const queryText = `INSERT INTO YTokens(yt_id, status) VALUES('${tokenURIStr}', 'offered')`;
+    client.query(queryText).then(console.log);
+    res.sendStatus(200);
+  } catch (e) {
+    console.log(e);
+    res.send(e);
+  }
+});
+
 app.post("/mint", async (req, res) => {
   try {
     const {tokenUri, tokenURIStr, tokenCreator} = req.body;
@@ -45,8 +56,8 @@ app.post("/mint", async (req, res) => {
       });
     console.log(rv);
     if (rv.status) {
-      const queryText = `INSERT INTO YTokens(yt_id, tokenid, status, owner, creator) VALUES('${tokenURIStr}',\
-        ${rv.events.Mint.returnValues.tokenId}, 'minted', '${rv.events.Mint.returnValues.addr}', '${tokenCreator}')`
+      const queryText = `UPDATE YTokens SET tokenid = ${rv.events.Mint.returnValues.tokenId}, status = 'minted',\
+        owner = '${rv.events.Mint.returnValues.addr}', creator = '${tokenCreator}') WHERE yt_id = '${tokenURIStr}'`;
       client.query(queryText).then(console.log);
       res.send(rv);
     }
