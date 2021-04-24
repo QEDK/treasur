@@ -2,14 +2,14 @@ require("dotenv").config();
 const express = require("express");
 const Web3 = require("web3");
 const path = require("path");
-const { Client } = require('pg');
+const {Client} = require("pg");
 const client = new Client({
   user: process.env.PGUSER,
   host: process.env.PGHOST,
   database: process.env.PGDATABASE,
   password: process.env.PGPASSWORD,
   port: 5432,
-})
+});
 client.connect();
 const app = express();
 // var web3 = new Web3('https://rpc-mainnet.maticvigil.com/');
@@ -45,6 +45,19 @@ app.post("/offer", async (req, res) => {
   }
 });
 
+app.post("/counterOffer", async (req, res) => {
+  const {tokenURI, amount, address} = req.body;
+console.log("ENdpoint hit")
+console.log(address)
+  try {
+    const rv = await TreasurContract.methods
+      .counterOffer(tokenURI, amount)
+      .send({from: address});
+    res.send(rv);
+  } catch (e) {
+    console.error(e);
+  }
+});
 app.post("/mint", async (req, res) => {
   try {
     const {tokenUri, tokenURIStr, tokenCreator} = req.body;
@@ -53,7 +66,7 @@ app.post("/mint", async (req, res) => {
       .approveMint(tokenUri, tokenURIStr, tokenCreator)
       .send({
         from: "0xd1058ECCEE8102Bb8C1A7390b7d6Ea2CB6dA8E0e",
-        gas: "500000"
+        gas: "500000",
       });
     console.log(rv);
     if (rv.status) {

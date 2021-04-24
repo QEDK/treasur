@@ -1,60 +1,72 @@
 import React, {useState} from "react";
 import axios from "axios";
-import { useHistory } from 'react-router-dom';
+import {useHistory} from "react-router-dom";
 import NFT from "../../NFT";
 import {TreasurContract, web3, IERC20Contract} from "../../Web3Connect";
 import {useSelector, useDispatch} from "react-redux";
-import { addVideo } from '../../../store/actions/VideoAction'
 import {
   Container,
   Input,
   InputGroup,
   VStack,
   Button,
-  InputLeftElement
+  InputLeftElement,
+  useToast
 } from "@chakra-ui/react";
 const index = () => {
   const [price, setPrice] = useState(0);
   const dispatch = useDispatch();
   let history = useHistory();
+  const toast = useToast();
   const {address} = useSelector((state) => state.connectWallet);
   const {tokenURI} = useSelector((state) => state.video);
   const handleOnChange = (e) => {
     setPrice(e.target.value);
   };
   const handleOnClick = async () => {
-    const EthUsdPrice = await TreasurContract.methods.chainLinkPrice().call();
-    const EthPrice = price / (EthUsdPrice * Math.pow(10, -8)).toPrecision(8);
-    const approval = await IERC20Contract.methods
-      .approve(
-        TreasurContract.options.address,
-        web3.utils.toWei(`${EthPrice.toPrecision(8)}`, "ether")
-      )
-      .send({from: address});
-    const offer = await TreasurContract.methods
-      .offer(
-        web3.utils.utf8ToHex(tokenURI),
-        web3.utils.toWei(`${EthPrice.toPrecision(8)}`, "ether")
-      )
-      .send({from: address});
+    if (price < 5) {
+      return( toast({
+        title: "Offer Error",
+        description: "The minimum amount to create an offer is $5.",
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+        position: "top-right"
+      }))
+    } else {
+      const EthUsdPrice = await TreasurContract.methods.chainLinkPrice().call();
+      const EthPrice = price / (EthUsdPrice * Math.pow(10, -8)).toPrecision(8);
+      const approval = await IERC20Contract.methods
+        .approve(
+          TreasurContract.options.address,
+          web3.utils.toWei(`${EthPrice.toPrecision(8)}`, "ether")
+        )
+        .send({from: address});
+      const offer = await TreasurContract.methods
+        .offer(
+          web3.utils.utf8ToHex(tokenURI),
+          web3.utils.toWei(`${EthPrice.toPrecision(8)}`, "ether")
+        )
+        .send({from: address});
       try {
         await axios.post("/offer", {
-          tokenURIStr: tokenURI
-        })
+          tokenURIStr: tokenURI,
+        });
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
-    try {
-      const tokenId = await axios.post("/mint", {
-        tokenUri: web3.utils.utf8ToHex(tokenURI),
-        tokenURIStr: tokenURI,
-        tokenCreator: address,
-      });
-      console.log(`rv from mint ${tokenId}`)
-      dispatch(addVideo(tokenURI))
-      history.push(`/nft/${tokenURI}`)
-    } catch (error) {
-      console.log(error);
+      try {
+        const tokenId = await axios.post("/mint", {
+          tokenUri: web3.utils.utf8ToHex(tokenURI),
+          tokenURIStr: tokenURI,
+          tokenCreator: address,
+        });
+        console.log(`rv from mint ${tokenId}`)
+        // dispatch(addVideo(tokenURI))
+        history.push(`/nft/${tokenURI}`)
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
   return (
@@ -64,7 +76,11 @@ const index = () => {
           <NFT id={tokenURI} />
           <InputGroup style={input}>
             <InputLeftElement children="$" />
-            <Input focusBorderColor="#652B19" placeholder="Enter Amount" onChange={handleOnChange} />
+            <Input
+              focusBorderColor="#652B19"
+              placeholder="Enter Amount"
+              onChange={handleOnChange}
+            />
           </InputGroup>
           <Button style={mintButton} onClick={handleOnClick}>
             Confirm Listing
@@ -76,8 +92,8 @@ const index = () => {
 };
 
 const input = {
-  marginTop: "2rem"
-}
+  marginTop: "2rem",
+};
 const mintButton = {
   backgroundColor: "#281A03",
   color: "white",

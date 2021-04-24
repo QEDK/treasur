@@ -8,7 +8,6 @@ const index = ({endDate}) => {
   const [minutesRemaining, setMinutesRemaining] = useState(0);
 
   const countDownDate = new Date(endDate).getTime();
-  console.log(countDownDate);
   useEffect(() => {
     const interval = setInterval(() => {
       var now = new Date().getTime();

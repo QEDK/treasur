@@ -36,7 +36,7 @@ const index = () => {
               */}
               <HStack>
                 <Box>
-          <Action />
+          <Action uri={tokenURI}/>
           </Box>
           <Box>
           <Information />
