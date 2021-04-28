@@ -49,6 +49,7 @@ const index = ({uri}) => {
           web3.utils.toWei(`${EthPrice.toPrecision(8)}`, "ether")
         )
         .send({from: address});
+        console.log(uri, web3.utils.toWei(`${(EthPrice.toPrecision(8))}`))
       const rv = await TreasurContract.methods
         .counterOffer(
           web3.utils.utf8ToHex(uri),
@@ -56,7 +57,7 @@ const index = ({uri}) => {
         )
         .send({from: address});
       const counterOfferMade = await axios.post("/counterOffer", {
-        tokenURI: web3.utils.utf8ToHex(uri),
+        tokenURI: uri,
       })
       console.log(rv);
     } catch (e) {

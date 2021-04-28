@@ -43,7 +43,9 @@ const index = () => {
           (await TreasurContract.methods.isListed(tokenURI).call())
         ) {
           console.log("Can't use this video, it's already there");
+          console.log(await TreasurContract.methods.isMinted(tokenURI).call())
         } else {
+         
           dispatch(placeOffer(yt_id[1]));
           history.push("/offer");
         }
