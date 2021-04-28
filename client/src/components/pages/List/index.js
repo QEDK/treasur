@@ -20,6 +20,7 @@ const index = () => {
   const toast = useToast();
   const {address} = useSelector((state) => state.connectWallet);
   const {tokenURI} = useSelector((state) => state.video);
+  const {givenName, avatar} = useSelector((state) => state.signIn);
   const handleOnChange = (e) => {
     setPrice(e.target.value);
   };
@@ -45,12 +46,20 @@ const index = () => {
       const offer = await TreasurContract.methods
         .offer(
           web3.utils.utf8ToHex(tokenURI),
-          web3.utils.toWei(`${EthPrice.toPrecision(8)}`, "ether")
+          web3.utils.toWei(`${EthPrice.toPrecision(8)}`, "ether"),
         )
         .send({from: address});
+        if(offer){
+          console.log('Offer was made!');
+
+        }
       try {
         await axios.post("/offer", {
           tokenURIStr: tokenURI,
+          offerValue: price,
+          offerAccount: address,
+          offerName: givenName,
+          offerAvatar: avatar
         });
       } catch (error) {
         console.log(error);

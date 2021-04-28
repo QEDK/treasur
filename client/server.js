@@ -34,9 +34,10 @@ app.get("/", (req, res) => {
 });
 
 app.post("/offer", async (req, res) => {
-  const {tokenURIStr} = req.body;
+  const {tokenURIStr, offerValue, offerAccount, offerName, offerAvatar} = req.body;
   try {
-    const queryText = `INSERT INTO YTokens(yt_id, status) VALUES('${tokenURIStr}', 'offered')`;
+    const queryText = `INSERT INTO YTokens(yt_id, status) VALUES('${tokenURIStr}', 'offered') ; 
+    INSERT INTO offers(yt_id, offervalue, offeraccount, offername, offeravatar, offertime) VALUES ('${tokenURIStr}', ${offerValue}, '${offerAccount}', '${offerName}', '${offerAvatar}', '${new Date().toISOString()}');`;
     client.query(queryText).then(console.log);
     res.sendStatus(200);
   } catch (e) {
@@ -46,17 +47,9 @@ app.post("/offer", async (req, res) => {
 });
 
 app.post("/counterOffer", async (req, res) => {
-  const {tokenURI, amount, address} = req.body;
-console.log("ENdpoint hit")
-console.log(address)
-  try {
-    const rv = await TreasurContract.methods
-      .counterOffer(tokenURI, amount)
-      .send({from: address});
-    res.send(rv);
-  } catch (e) {
-    console.error(e);
-  }
+  const {tokenURI} = req.body;
+ const queryText = `SELECT offervalue, offeraccount, offername, offeravatar, offertime from Offers WHERE yt_id = '${tokenURI}'`
+ client.query(queryText).then(console.log);
 });
 app.post("/mint", async (req, res) => {
   try {

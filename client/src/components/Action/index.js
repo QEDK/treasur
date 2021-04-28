@@ -55,11 +55,9 @@ const index = ({uri}) => {
           web3.utils.toWei(`${(EthPrice.toPrecision(8))}`)
         )
         .send({from: address});
-      // const counterOfferMade = await axios.post("/counterOffer", {
-      //   tokenURI: web3.utils.utf8ToHex(uri),
-      //   address,
-      //   amount: web3.utils.toWei(`${EthPrice.toPrecision(8)}`, "ether")
-      // })
+      const counterOfferMade = await axios.post("/counterOffer", {
+        tokenURI: web3.utils.utf8ToHex(uri),
+      })
       console.log(rv);
     } catch (e) {
       console.error(e);
