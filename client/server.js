@@ -3,6 +3,7 @@ const express = require("express");
 const Web3 = require("web3");
 const path = require("path");
 const {Client} = require("pg");
+const { convertObjectToBinary } = require('./src/utils/binary');
 const client = new Client({
   user: process.env.PGUSER,
   host: process.env.PGHOST,
@@ -49,7 +50,15 @@ app.post("/offer", async (req, res) => {
 app.post("/counterOffer", async (req, res) => {
   const {tokenURI} = req.body;
  const queryText = `SELECT offervalue, offeraccount, offername, offeravatar, offertime from Offers WHERE yt_id = '${tokenURI}'`
- client.query(queryText).then(console.log);
+ const lastOffer = await client.query(queryText);
+ const { offervalue : offerValue, offeraccount : offerAccount, offername : offerName, offeravatar : offerAvatar } = lastOffer.rows[0];
+ const lastOfferObj = {
+   offerValue,
+   offerAccount,
+   offerName,
+   offerAvatar
+ }
+ console.log("BINARY", convertObjectToBinary(lastOfferObj));
 });
 app.post("/mint", async (req, res) => {
   try {

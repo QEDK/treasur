@@ -65,18 +65,6 @@ const index = () => {
       } catch (error) {
         console.log(error);
       }
-      // try {
-      //   const tokenId = await axios.post("/mint", {
-      //     tokenUri: web3.utils.utf8ToHex(tokenURI),
-      //     tokenURIStr: tokenURI,
-      //     tokenCreator: address,
-      //   });
-      //   console.log(`rv from mint ${tokenId}`)
-      //   // dispatch(addVideo(tokenURI))
-      //   history.push(`/nft/${tokenURI}`)
-      // } catch (error) {
-      //   console.log(error);
-      // }
     }
   };
   return (
