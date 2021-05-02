@@ -1,42 +1,44 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
+import axios from "axios";
 import Card from "../Card";
-import { useSelector } from 'react-redux';
-import { Wrap, WrapItem } from "@chakra-ui/react";
-// TODO: Loop over all the data sent from the back-end
-// Render 1 Card component for each object in the data.
+import {Wrap, WrapItem, Text} from "@chakra-ui/react";
+
 const CardList = () => {
+  const [videoList, setVideoList] = useState([]);
+  let listItems;
+  useEffect(async () => {
+    const videos = await loadData();
+    // console.log("VIDEOS", videos[0].yt_id);
+    setVideoList(videos);
+    listItems = videos.forEach((video) => {
+      <WrapItem>
+        <Card URI={video.yt_id} />
+      </WrapItem>;
+    });
+    console.log(listItems);
+  }, []);
 
-  const { videos } = useSelector((state) => state.video)
-  return (
+  const loadData = async () => {
+    try {
+      const res = await axios.get("/live");
+      return res.data;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  console.log(listItems);
+  return videoList ? (
     <>
-
       <Wrap>
-        <WrapItem>
-          <Card  URI={"tfSS1e3kYeo"}/>
-        </WrapItem>
-        {/* <WrapItem>
-          <Card />
-        </WrapItem>
-        <WrapItem>
-          <Card />
-        </WrapItem>
-        <WrapItem>
-          <Card />
-        </WrapItem>
-        <WrapItem>
-          <Card />
-        </WrapItem>
-        <WrapItem>
-          <Card />
-        </WrapItem> */}
-        {videos.forEach((video) => (
+        {videoList.map((video) => (
           <WrapItem>
-            <Card URI={video} />
+            <Card URI={video.yt_id} />
           </WrapItem>
         ))}
-        </Wrap>
-
+      </Wrap>
     </>
+  ) : (
+    <Text>Error loading DB</Text>
   );
 };
 

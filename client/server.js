@@ -3,7 +3,7 @@ const express = require("express");
 const Web3 = require("web3");
 const path = require("path");
 const {Client} = require("pg");
-const { convertObjectToBinary } = require('./src/utils/binary');
+const {convertObjectToBinary} = require("./src/utils/binary");
 const client = new Client({
   user: process.env.PGUSER,
   host: process.env.PGHOST,
@@ -34,6 +34,12 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
+app.get('/live', async (req, res) => {
+  const queryText = `SELECT yt_id from YTokens LIMIT 10;`;
+  const data = await client.query(queryText);
+  console.log("DATA", data.rows);
+  res.send(data.rows);
+})
 app.post("/offer", async (req, res) => {
   const {tokenURIStr, offerValue, offerAccount, offerName, offerAvatar} = req.body;
   try {
@@ -49,16 +55,21 @@ app.post("/offer", async (req, res) => {
 
 app.post("/counterOffer", async (req, res) => {
   const {tokenURI} = req.body;
- const queryText = `SELECT offervalue, offeraccount, offername, offeravatar, offertime from Offers WHERE yt_id = '${tokenURI}'`
- const lastOffer = await client.query(queryText);
- const { offervalue : offerValue, offeraccount : offerAccount, offername : offerName, offeravatar : offerAvatar } = lastOffer.rows[0];
- const lastOfferObj = {
-   offerValue,
-   offerAccount,
-   offerName,
-   offerAvatar
- }
- console.log("BINARY", convertObjectToBinary(lastOfferObj));
+  const queryText = `SELECT offervalue, offeraccount, offername, offeravatar, offertime from Offers WHERE yt_id = '${tokenURI}'`;
+  const lastOffer = await client.query(queryText);
+  const {
+    offervalue: offerValue,
+    offeraccount: offerAccount,
+    offername: offerName,
+    offeravatar: offerAvatar,
+  } = lastOffer.rows[0];
+  const lastOfferObj = {
+    offerValue,
+    offerAccount,
+    offerName,
+    offerAvatar,
+  };
+JSON.stringify(lastOfferObj);
 });
 app.post("/mint", async (req, res) => {
   try {

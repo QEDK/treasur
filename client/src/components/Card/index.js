@@ -30,12 +30,6 @@ const Card = ({ URI }) => {
         >
           <GridItem rowSpan={2} colSpan={3}>
             <Center>
-              {/* 
-              Youtube image URL Format :-
-              https://img.youtube.com/vi/<insert-youtube-video-id-here>/hqdefault.jpg
-              TODO: Add a cleanup method to get the video ID
-              TOD: Insert the id in the url to dynamically render images
-               */}
               <Image
                 style={thumbnail}
                 src={`https://img.youtube.com/vi/${URI}/hqdefault.jpg`}
