@@ -43,8 +43,18 @@ app.get('/live', async (req, res) => {
 app.post("/offer", async (req, res) => {
   const {tokenURIStr, offerValue, offerAccount, offerName, offerAvatar} = req.body;
   try {
-    const queryText = `INSERT INTO YTokens(yt_id, status) VALUES('${tokenURIStr}', 'offered') ; 
-    INSERT INTO offers(yt_id, offervalue, offeraccount, offername, offeravatar, offertime) VALUES ('${tokenURIStr}', ${offerValue}, '${offerAccount}', '${offerName}', '${offerAvatar}', '${new Date().toISOString()}');`;
+    const lastOfferObj = [{
+      timestamp: new Date().toISOString(),
+      offerValue: offerValue,
+      offerAccount: offerAccount,
+      offerName: offerName,
+      offerAvatar: offerAvatar,
+    }];
+    const lastOfferJSON = JSON.stringify(lastOfferObj);
+    const queryText = `INSERT INTO YTokens(yt_id, status) VALUES('${tokenURIStr}', 'offered');
+    INSERT INTO offers(yt_id, offervalue, offeraccount, offername, offeravatar, offertime, history) VALUES
+    ('${tokenURIStr}', ${offerValue}, '${offerAccount}', '${offerName}', '${offerAvatar}',
+    '${new Date().toISOString()}', '${lastOfferJSON}');`;
     client.query(queryText).then(console.log);
     res.sendStatus(200);
   } catch (e) {
@@ -54,23 +64,27 @@ app.post("/offer", async (req, res) => {
 });
 
 app.post("/counterOffer", async (req, res) => {
-  const {tokenURI} = req.body;
-  const queryText = `SELECT offervalue, offeraccount, offername, offeravatar, offertime from Offers WHERE yt_id = '${tokenURI}'`;
+  const { offerValue, offerAccount, offerName, offerAvatar, tokenURI} = req.body;
+  const queryText = `SELECT history from Offers WHERE yt_id = '${tokenURI}'`;
   const lastOffer = await client.query(queryText);
   const {
-    offervalue: offerValue,
-    offeraccount: offerAccount,
-    offername: offerName,
-    offeravatar: offerAvatar,
+    history: history,
   } = lastOffer.rows[0];
-  const lastOfferObj = {
-    offerValue,
-    offerAccount,
-    offerName,
-    offerAvatar,
-  };
-JSON.stringify(lastOfferObj);
+  const lastOfferObj = JSON.parse(history).concat([{
+      timestamp: new Date().toISOString(),
+      offervalue: offerValue,
+      offeraccount: offerAccount,
+      offername: offerName,
+      offeravatar: offerAvatar,
+  }]);
+  const lastOfferJSON = JSON.stringify(lastOfferObj);
+  const insertText = `UPDATE offers SET offervalue = ${offerValue}, offeraccount = '${offerAccount}',
+  offername = '${offerName}', offeravatar = '${offerAvatar}', offertime = '${new Date().toISOString()}',
+  history = '${lastOfferJSON}' WHERE yt_id = '${tokenURIStr}'`;
+  client.query(insertText).then(console.log);
+  res.sendStatus(200);
 });
+
 app.post("/mint", async (req, res) => {
   try {
     const {tokenUri, tokenURIStr, tokenCreator} = req.body;
