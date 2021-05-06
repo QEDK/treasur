@@ -15,12 +15,9 @@ import {IoMdThumbsDown, IoMdThumbsUp} from "react-icons/io";
 import {Fade, AttentionSeeker, Zoom} from "react-awesome-reveal";
 import BidButton from '../BidButton';
 
-// TODO: Get URL, Price, Name as props
-// Make all the text generic
 const Card = ({ URI }) => {
-
   const[videoData, setVideoData] = useState(null);
-
+  
   useEffect(async () => {
       // await loadClient();
       const res = await axios.get(`https://www.googleapis.com/youtube/v3/videos?part=snippet%2Cstatistics&id=${URI}&key=${process.env.REACT_APP_YOUTUBE_API_KEY}`)
@@ -49,7 +46,7 @@ const Card = ({ URI }) => {
           </GridItem>
           <GridItem colSpan={2}>
             <VStack align="stretch">
-              <Text fontSize="2xl" isTruncated>
+              <Text fontSize="xl" isTruncated style={{maxWidth: "15rem"}}>
                 {videoData ? videoData.snippet.localized.title : 'Loading'}
               </Text>
               <Zoom>
