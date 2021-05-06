@@ -23,11 +23,11 @@ import {
   Input,
 } from "@chakra-ui/react";
 import Timer from "../Timer";
-import BidButton from "../BidButton";
 
 const index = ({uri}) => {
   const {isOpen, onOpen, onClose} = useDisclosure();
   const {address} = useSelector((state) => state.connectWallet);
+  const {givenName, avatar} = useSelector((state) => state.signIn);
   const property = {
     latestBid: 0.69,
     // Add a string if there's no auction.
@@ -58,6 +58,10 @@ const index = ({uri}) => {
         .send({from: address});
       const counterOfferMade = await axios.post("/counterOffer", {
         tokenURI: uri,
+        offerAccount: address,
+        offerValue: bidPrice,
+        offerName: givenName,
+        offerAvatar: avatar
       })
       console.log(rv);
     } catch (e) {

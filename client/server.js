@@ -70,17 +70,19 @@ app.post("/counterOffer", async (req, res) => {
   const {
     history: history,
   } = lastOffer.rows[0];
-  const lastOfferObj = JSON.parse(history).concat([{
+
+  const lastOfferObj = history.concat([{
       timestamp: new Date().toISOString(),
       offervalue: offerValue,
       offeraccount: offerAccount,
       offername: offerName,
       offeravatar: offerAvatar,
   }]);
-  const lastOfferJSON = JSON.stringify(lastOfferObj);
+  console.log(lastOfferObj)
+  // const lastOfferJSON = JSON.stringify(lastOfferObj);
   const insertText = `UPDATE offers SET offervalue = ${offerValue}, offeraccount = '${offerAccount}',
   offername = '${offerName}', offeravatar = '${offerAvatar}', offertime = '${new Date().toISOString()}',
-  history = '${lastOfferJSON}' WHERE yt_id = '${tokenURIStr}'`;
+  history = '${[lastOfferObj]}' WHERE yt_id = '${tokenURI}'`;
   client.query(insertText).then(console.log);
   res.sendStatus(200);
 });
