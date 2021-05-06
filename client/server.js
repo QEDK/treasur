@@ -82,7 +82,7 @@ app.post("/counterOffer", async (req, res) => {
   // const lastOfferJSON = JSON.stringify(lastOfferObj);
   const insertText = `UPDATE offers SET offervalue = ${offerValue}, offeraccount = '${offerAccount}',
   offername = '${offerName}', offeravatar = '${offerAvatar}', offertime = '${new Date().toISOString()}',
-  history = '${[lastOfferObj]}' WHERE yt_id = '${tokenURI}'`;
+  history = ${lastOfferObj} WHERE yt_id = '${tokenURI}'`;
   client.query(insertText).then(console.log);
   res.sendStatus(200);
 });
@@ -109,4 +109,11 @@ app.post("/mint", async (req, res) => {
     res.send(e);
   }
 });
+
+app.get("/info", async (req, res) => {
+  const { uri } = req.body;
+  const queryText = `SELECT history from OFFERS where yt_id = ${uri};`
+  const rv = await client.query(queryText)
+  console.log(rv);
+})
 app.listen(8080);

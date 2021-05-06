@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
 import signIn from './reducers/signIn';
 import connectWallet from './reducers/connectWallet';
+import nft from './reducers/nft';
 import Video from './reducers/Video'
 
 const reducer = combineReducers({
     signIn,
     connectWallet,
-    video: Video
+    video: Video,
+    nft
 });
 
 const store = configureStore({
