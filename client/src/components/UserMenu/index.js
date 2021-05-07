@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   Menu,
   MenuList,
@@ -22,7 +23,7 @@ const index = ({name, picture}) => {
         </HStack>
       </MenuButton>
       <MenuList>
-        <MenuItem>Profile</MenuItem>
+        <Link to="/profile"><MenuItem>Profile</MenuItem></Link>
         <MenuItem>My Collection</MenuItem>
       </MenuList>
     </Menu>

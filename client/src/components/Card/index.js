@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom"
 import {
   Grid,
   GridItem,
@@ -12,9 +13,11 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import {IoMdThumbsDown, IoMdThumbsUp} from "react-icons/io";
-import {Fade, AttentionSeeker, Zoom} from "react-awesome-reveal";
+import {Fade, Zoom} from "react-awesome-reveal";
 import BidButton from '../BidButton';
 
+// TODO
+// Add dynamic sub count and price
 const Card = ({ URI }) => {
   const[videoData, setVideoData] = useState(null);
   
@@ -91,7 +94,7 @@ const Card = ({ URI }) => {
               {/* <Button style={bidButton} leftIcon={<PlusSquareIcon />} variant="solid">
                 Bid
               </Button> */}
-              <BidButton text="Bid" />
+              <Link to={`/nft/${URI}`}><BidButton text="Bid" /></Link>
           </GridItem>
         </Grid>
       </Fade>

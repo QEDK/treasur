@@ -33,8 +33,8 @@ function App() {
   return (
     <ChakraProvider theme={theme}>
        <Fonts />
+       <Router>
        <Navbar />
-      <Router>
         <Switch>
       <Route path='/nft/:tokenURI'>
         <Dashboard />

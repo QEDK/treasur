@@ -77,11 +77,11 @@ const index = ({uri}) => {
           <Text fontSize="1.3rem">0.0023 WETH</Text>
         </Box>
         <Box style={innerBox}>
-          <Text fontSize="1.8rem">Time to end</Text>
+          <Text fontSize="1.8rem">Awaiting Approval</Text>
           {/* 
                     Discuss with Ankit about this functionality
                 */}
-          <Timer endDate={property.AuctionEndTime} />
+          {/* <Timer endDate={property.AuctionEndTime} /> */}
         </Box>
       </SimpleGrid>
       {/* <BidButton text="Place a bid" /> */}
