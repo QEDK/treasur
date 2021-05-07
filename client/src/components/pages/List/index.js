@@ -81,7 +81,7 @@ const index = () => {
             />
           </InputGroup>
           <Button style={mintButton} onClick={handleOnClick}>
-            Confirm Listing
+            Confirm Offer
           </Button>
         </VStack>
       </Container>

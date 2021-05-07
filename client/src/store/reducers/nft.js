@@ -1,7 +1,8 @@
-import { GET_INFO } from '../type';
+import { GET_INFO, GET_MY_NFT } from '../type';
 
 const initialState = {
-    info: null
+    info: [],
+    myNFT: null
 }
 
 const reducer = (state = initialState, action) => {
@@ -11,6 +12,11 @@ const reducer = (state = initialState, action) => {
         case GET_INFO:
             return{
                 info: [...state.info, action.payload]
+            }
+
+        case GET_MY_NFT:
+            return{
+                myNFT
             }
         
         default:

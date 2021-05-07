@@ -116,4 +116,20 @@ app.get("/info", async (req, res) => {
   const rv = await client.query(queryText)
   console.log(rv);
 })
+
+app.get("/myvideos", async(req, res) => {
+  console.log("QUERY SHOT!!")
+  const queryText = `SELECT * FROM YTokens WHERE status = 'offered';`
+  const rv = await client.query(queryText);
+  console.log(rv.rows);
+  res.send(rv.rows)
+})
+
+app.get("/owned/:address", async (req, res) => {
+  const { address } = req.params;
+  const queryText = `SELECT * from YTokens where owner = '${address}';`
+  const rv = await client.query(queryText);
+  console.log(rv.rows);
+  res.send(rv.rows)
+})
 app.listen(8080);

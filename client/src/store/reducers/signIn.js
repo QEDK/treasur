@@ -4,18 +4,21 @@ const initialState = {
     givenName: null,
     email: null,
     avatar: null,
-    isAuthenticated: false
+    isAuthenticated: false,
+    googleId: null
 }
 
 const reducer = (state = initialState, action) => {
     switch(action.type){
         case PROFILE:
+        console.log(action.payload)
             return {
                 ...state,
                 givenName: action.payload.givenName,
                 email: action.payload.email,
                 avatar: action.payload.imageUrl,
-                isAuthenticated: true
+                isAuthenticated: true,
+                googleId: action.payload.googleId
             }
         case SIGN_OUT:
             return {
