@@ -142,7 +142,7 @@ const mockData = [
                 {/* <Text>Your videos awaiting approvals appear here.</Text> */}
                 {/* {nfts != null ? nfts.forEach((nft) => <MyVideo uri={nft.yt_id} />) : <Text>Your videos will appear here</Text>} */}
                 <VStack>
-                {mockData.map((nft) => <Box><MyVideo uri={nft.yt_id} price={nft.price} /></Box>)}
+                {mockData.map((nft) => <Box><MyVideo uri={nft.yt_id} price={nft.price} creator={nft.creator} /></Box>)}
                 </VStack>
                 </Center>
               </TabPanel>
