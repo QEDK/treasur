@@ -40,6 +40,7 @@ app.get('/live', async (req, res) => {
   console.log("DATA", data.rows);
   res.send(data.rows);
 })
+
 app.post("/offer", async (req, res) => {
   const {tokenURIStr, offerValue, offerAccount, offerName, offerAvatar} = req.body;
   try {
@@ -50,11 +51,10 @@ app.post("/offer", async (req, res) => {
       offerName: offerName,
       offerAvatar: offerAvatar,
     }];
-    const lastOfferJSON = JSON.stringify(lastOfferObj);
     const queryText = `INSERT INTO YTokens(yt_id, status) VALUES('${tokenURIStr}', 'offered');
     INSERT INTO offers(yt_id, offervalue, offeraccount, offername, offeravatar, offertime, history) VALUES
     ('${tokenURIStr}', ${offerValue}, '${offerAccount}', '${offerName}', '${offerAvatar}',
-    '${new Date().toISOString()}', '${lastOfferJSON}');`;
+    '${new Date().toISOString()}', '${JSON.stringify(lastOfferObj)}');`;
     client.query(queryText).then(console.log);
     res.sendStatus(200);
   } catch (e) {
@@ -71,18 +71,17 @@ app.post("/counterOffer", async (req, res) => {
     history: history,
   } = lastOffer.rows[0];
 
-  const lastOfferObj = history.concat([{
+  const lastOfferObj = history.concat({
       timestamp: new Date().toISOString(),
-      offervalue: offerValue,
-      offeraccount: offerAccount,
-      offername: offerName,
-      offeravatar: offerAvatar,
-  }]);
-  console.log(lastOfferObj)
-  // const lastOfferJSON = JSON.stringify(lastOfferObj);
+      offerValue: offerValue,
+      offerAccount: offerAccount,
+      offerName: offerName,
+      offerAvatar: offerAvatar,
+  });
+  console.log(lastOfferObj);
   const insertText = `UPDATE offers SET offervalue = ${offerValue}, offeraccount = '${offerAccount}',
   offername = '${offerName}', offeravatar = '${offerAvatar}', offertime = '${new Date().toISOString()}',
-  history = ${JSON.stringify(lastOfferObj)} WHERE yt_id = '${tokenURI}'`;
+  history = '${JSON.stringify(lastOfferObj)}' WHERE yt_id = '${tokenURI}'`;
   client.query(insertText).then(console.log);
   res.sendStatus(200);
 });
