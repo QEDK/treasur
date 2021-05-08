@@ -37,7 +37,7 @@ app.get("/", (req, res) => {
 app.get('/live', async (req, res) => {
   const queryText = `SELECT yt_id from YTokens LIMIT 10;`;
   const data = await client.query(queryText);
-  console.log("DATA", data.rows);
+  // console.log("DATA", data.rows);
   res.send(data.rows);
 })
 
@@ -109,6 +109,11 @@ app.post("/mint", async (req, res) => {
   }
 });
 
+app.post("/declinemint", async (req, res) => {
+  const { tokenUri } = req.body;
+    const successfulDecline = await TreasurContract.methods.declineMint(tokenUri).send({})
+    res.send(successfulDecline);
+})
 app.get("/info", async (req, res) => {
   const { uri } = req.body;
   const queryText = `SELECT history from OFFERS where yt_id = ${uri};`
@@ -117,18 +122,23 @@ app.get("/info", async (req, res) => {
 })
 
 app.get("/myvideos", async(req, res) => {
-  console.log("QUERY SHOT!!")
-  const queryText = `SELECT * FROM YTokens WHERE status = 'offered';`
+  const queryText = `SELECT yt_id, offeraccount, offervalue FROM offers;`
   const rv = await client.query(queryText);
-  console.log(rv.rows);
   res.send(rv.rows)
 })
 
+app.get("/history/:tokenuri", async (req, res) => {
+  console.log("QUERY SHOTTTT")
+    const { tokenUri } = req.params;
+    const queryText = `SELECT history from offers where yt_id = '${tokenUri}';`
+    const rv = await client.query(queryText);
+    console.log(rv.rows);
+})
 app.get("/owned/:address", async (req, res) => {
   const { address } = req.params;
   const queryText = `SELECT * from YTokens where owner = '${address}';`
   const rv = await client.query(queryText);
   console.log(rv.rows);
-  res.send(rv.rows)
+  // res.send(rv.rows)
 })
 app.listen(8080);

@@ -17,6 +17,12 @@ const handleMint = async () => {
     tokenCreator: creator
   })
 }
+
+const handleDeclineMint = async () => {
+  const rv = await axios.post("/declineMint", {
+    tokenUri: uri
+  })
+}
   return (
     <div>
       <HStack>
@@ -41,7 +47,7 @@ const handleMint = async () => {
         <Spacer />
         <Box>
           <Button style={{marginRight: "20px"}} onClick={handleMint} colorScheme="teal">Approve</Button>
-          <Button colorScheme="red">Reject</Button>
+          <Button colorScheme="red" onClick={handleDeclineMint}>Reject</Button>
         </Box>
       </HStack>
     </div>
