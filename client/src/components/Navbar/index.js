@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
 import {Flex, Button, Box, Spacer, useToast } from "@chakra-ui/react";
 import { useSelector } from 'react-redux';
 import {AiOutlineShopping} from "react-icons/ai";
@@ -30,9 +31,11 @@ const index = () => {
     <div style={navStyle}>
       <Flex direction="row" justify="flex-start" wrap={true}>
         <Box style={margin}>
+          <Link to="/">
           <Button leftIcon={<AiOutlineShopping />} style={navButton} variant="solid">
             Marketplace
           </Button>
+          </Link>
         </Box>
         <Box style={margin}>
           <Web3Connect />

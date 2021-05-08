@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from 'axios';
 import {
   Container,
   Grid,
@@ -14,6 +15,13 @@ import Information from "../../Information";
 const index = () => {
 
   const {tokenURI} = useParams();
+  const [offers, setOffers] = useState(null);
+  useEffect(async ()=> {
+    console.log(tokenURI)
+    const history = await axios.get(`/history/${tokenURI}`);
+    setOffers(history);
+  }, [])
+
   return (
     <>
       <Grid
@@ -24,21 +32,19 @@ const index = () => {
       >
         <Container maxw="container.xl">
           <GridItem colSpan={2}>
-            {/* 
-                TODO: Change src to dynamic via props or state
-              */}
             <NFT id={tokenURI} />
           </GridItem>
         </Container>
         <GridItem colSpan={2}>
-          {/* 
-                TODO: Add the rest of the page here 
-              */}
               <HStack>
                 <Box>
-          <Action />
+          <Action uri={tokenURI}/>
           </Box>
           <Box>
+            {/* TODO:
+              Use offers array to render
+              this dynamically.
+            */}
           <Information />
           </Box>
           </HStack>
