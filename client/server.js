@@ -110,8 +110,13 @@ app.post("/mint", async (req, res) => {
 });
 
 app.post("/declinemint", async (req, res) => {
+  console.log("DECLINE MINT");
   const { tokenUri } = req.body;
-    const successfulDecline = await TreasurContract.methods.declineMint(tokenUri).send({})
+    const successfulDecline = await TreasurContract.methods.declineMint(tokenUri).send({
+      from: "0xd1058ECCEE8102Bb8C1A7390b7d6Ea2CB6dA8E0e",
+      gas: "500000",
+    });
+    console.log("DECLINE MINT", successfulDecline);
     res.send(successfulDecline);
 })
 app.get("/info", async (req, res) => {
@@ -127,12 +132,14 @@ app.get("/myvideos", async(req, res) => {
   res.send(rv.rows)
 })
 
-app.get("/history/:tokenuri", async (req, res) => {
+app.get("/history/:tokenURI", async (req, res) => {
   console.log("QUERY SHOTTTT")
-    const { tokenUri } = req.params;
-    const queryText = `SELECT history from offers where yt_id = '${tokenUri}';`
+    const { tokenURI } = req.params;
+    console.log(tokenURI)
+    const queryText = `SELECT history FROM offers WHERE yt_id = '${tokenURI}';`
     const rv = await client.query(queryText);
-    console.log(rv.rows);
+    console.log(rv.rows[0].history);
+    res.send(rv.rows)
 })
 app.get("/owned/:address", async (req, res) => {
   const { address } = req.params;

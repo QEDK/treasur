@@ -12,15 +12,15 @@ const index = ({uri, price, creator}) => {
 
 const handleMint = async () => {
   await axios.post("/mint", {
-    tokenUri: uri,
-    tokenUriStr: web3.utils.utf8ToHex(uri),
-    tokenCreator: creator
+    tokenURIStr: uri,
+    tokenUri: web3.utils.utf8ToHex(uri),
+    tokenCreator: `0xd1058ECCEE8102Bb8C1A7390b7d6Ea2CB6dA8E0e`
   })
 }
 
 const handleDeclineMint = async () => {
   const rv = await axios.post("/declineMint", {
-    tokenUri: uri
+    tokenUri: web3.utils.utf8ToHex(uri)
   })
 }
   return (

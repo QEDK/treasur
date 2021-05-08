@@ -17,7 +17,8 @@ const index = () => {
   const {tokenURI} = useParams();
   const [offers, setOffers] = useState(null);
   useEffect(async ()=> {
-    const history = await axios.get(`/history/tokenUri`);
+    console.log(tokenURI)
+    const history = await axios.get(`/history/${tokenURI}`);
     setOffers(history);
   }, [])
 
