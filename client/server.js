@@ -18,7 +18,6 @@ var web3 = new Web3(
   new Web3.providers.HttpProvider("https://rpc-mumbai.maticvigil.com/")
 );
 const account = web3.eth.accounts.privateKeyToAccount(process.env.PRIVATE_KEY);
-
 web3.eth.accounts.wallet.add(account);
 
 const Treasur = require("./src/config/Treasur.json");
@@ -98,8 +97,9 @@ app.post("/mint", async (req, res) => {
       });
     console.log(rv);
     if (rv.status) {
-      const queryText = `UPDATE YTokens SET tokenid = ${rv.events.Mint.returnValues.tokenId}, status = 'minted',\
-        owner = '${rv.events.Mint.returnValues.addr}', creator = '${tokenCreator}' WHERE yt_id = '${tokenURIStr}'`;
+      const queryText = `UPDATE YTokens SET tokenid = ${rv.events.Mint.returnValues.tokenId}, status = 'minted',
+      owner = '${rv.events.Mint.returnValues.addr}', creator = '${tokenCreator}' WHERE yt_id = '${tokenURIStr}';
+      DELETE FROM offers WHERE yt_id = '${tokenURIStr}'`;
       client.query(queryText).then(console.log);
       res.send(rv);
     }
@@ -109,16 +109,19 @@ app.post("/mint", async (req, res) => {
   }
 });
 
-app.post("/declinemint", async (req, res) => {
-  console.log("DECLINE MINT");
-  const { tokenUri } = req.body;
-    const successfulDecline = await TreasurContract.methods.declineMint(tokenUri).send({
-      from: "0xd1058ECCEE8102Bb8C1A7390b7d6Ea2CB6dA8E0e",
-      gas: "500000",
-    });
-    console.log("DECLINE MINT", successfulDecline);
-    res.send(successfulDecline);
+app.post("/decline", async (req, res) => {
+  	const { tokenUri } = req.body;
+	const rv = await TreasurContract.methods.declineMint(tokenUri).send({
+	  from: "0xd1058ECCEE8102Bb8C1A7390b7d6Ea2CB6dA8E0e",
+	  gas: "500000",
+	});
+	if (rv.status) {
+		const queryText = `DELETE FROM offers WHERE yt_id = '${tokenURIStr}'`;
+		client.query(queryText).then(console.log);
+	}
+	res.send(rv);
 })
+
 app.get("/info", async (req, res) => {
   const { uri } = req.body;
   const queryText = `SELECT history from OFFERS where yt_id = ${uri};`
@@ -133,14 +136,13 @@ app.get("/myvideos", async(req, res) => {
 })
 
 app.get("/history/:tokenURI", async (req, res) => {
-  console.log("QUERY SHOTTTT")
     const { tokenURI } = req.params;
-    console.log(tokenURI)
     const queryText = `SELECT history FROM offers WHERE yt_id = '${tokenURI}';`
     const rv = await client.query(queryText);
     console.log(rv.rows[0].history);
-    res.send(rv.rows)
+    res.send(rv.rows[0].history);
 })
+
 app.get("/owned/:address", async (req, res) => {
   const { address } = req.params;
   const queryText = `SELECT * from YTokens where owner = '${address}';`
@@ -148,4 +150,5 @@ app.get("/owned/:address", async (req, res) => {
   console.log(rv.rows);
   // res.send(rv.rows)
 })
+
 app.listen(8080);
