@@ -22,7 +22,6 @@ const Card = ({ URI }) => {
   const[videoData, setVideoData] = useState(null);
   
   useEffect(async () => {
-      // await loadClient();
       const res = await axios.get(`https://www.googleapis.com/youtube/v3/videos?part=snippet%2Cstatistics&id=${URI}&key=${process.env.REACT_APP_YOUTUBE_API_KEY}`)
       setVideoData(res.data.items[0]);
      console.log(res.data.items[0]);

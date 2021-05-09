@@ -8,7 +8,7 @@ import { useToast } from "@chakra-ui/react";
 const client_id = `${process.env.REACT_APP_GOOGLE_CLIENT_ID}`;
 const index = () => {
   const dispatch = useDispatch();
-
+  const toast = useToast();
   const onSuccess = (res) => {
     dispatch(signIn(res.profileObj))
     refreshTokenSetup(res);
