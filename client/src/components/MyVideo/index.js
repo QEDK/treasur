@@ -19,7 +19,7 @@ const handleMint = async () => {
 }
 
 const handleDeclineMint = async () => {
-  const rv = await axios.post("/declineMint", {
+  const rv = await axios.post("/decline", {
     tokenUri: web3.utils.utf8ToHex(uri)
   })
 }
