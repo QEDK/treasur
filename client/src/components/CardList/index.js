@@ -1,21 +1,14 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import Card from "../Card";
-import {Wrap, WrapItem, Text} from "@chakra-ui/react";
+import {Wrap, WrapItem, Text, usePinInputDescendantsContext} from "@chakra-ui/react";
 
 const CardList = () => {
   const [videoList, setVideoList] = useState([]);
-  let listItems;
+
   useEffect(async () => {
     const videos = await loadData();
-    // console.log("VIDEOS", videos[0].yt_id);
     setVideoList(videos);
-    listItems = videos.forEach((video) => {
-      <WrapItem>
-        <Card URI={video.yt_id} />
-      </WrapItem>;
-    });
-    console.log(listItems);
   }, []);
 
   const loadData = async () => {
@@ -26,13 +19,13 @@ const CardList = () => {
       console.error(error);
     }
   };
-  console.log(listItems);
+
   return videoList ? (
     <>
       <Wrap>
-        {videoList.map((video) => (
+        {videoList.map((video, index) => (
           <WrapItem>
-            <Card URI={video.yt_id} />
+            <Card key={index} URI={video.yt_id} />
           </WrapItem>
         ))}
       </Wrap>

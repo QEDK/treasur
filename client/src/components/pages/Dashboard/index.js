@@ -1,27 +1,24 @@
-import React, { useEffect, useState } from "react";
-import axios from 'axios';
-import {
-  Container,
-  Grid,
-  GridItem,
-  HStack,
-  Box
-} from "@chakra-ui/react";
+import React, {useEffect, useState} from "react";
+import axios from "axios";
+import {Container, Grid, GridItem, HStack, Box, Text} from "@chakra-ui/react";
 import {useParams} from "react-router-dom";
 import NFT from "../../NFT";
 import Action from "../../Action";
 import Information from "../../Information";
 
 const index = () => {
-
   const {tokenURI} = useParams();
   const [offers, setOffers] = useState(null);
-  useEffect(async ()=> {
-    console.log(tokenURI)
+  useEffect(async () => {
+    console.log(tokenURI);
     const history = await axios.get(`/history/${tokenURI}`);
-    setOffers(history);
-  }, [])
+    console.log("HISTORY", history);
+    setOffers(history.data);
+  }, []);
 
+  // TODO
+  // Highest offer price render
+  // Convert that to WETH render
   return (
     <>
       <Grid
@@ -36,17 +33,25 @@ const index = () => {
           </GridItem>
         </Container>
         <GridItem colSpan={2}>
-              <HStack>
-                <Box>
-          <Action uri={tokenURI}/>
-          </Box>
-          <Box>
-            {/* TODO:
+          <HStack>
+            <Box>
+              <Action uri={tokenURI} />
+            </Box>
+            <Box>
+              {/* TODO:
               Use offers array to render
               this dynamically.
             */}
-          <Information />
-          </Box>
+              {offers &&
+                offers.map((bid) => (
+                  <Information
+                    name={bid.offerName}
+                    value={bid.offerValue}
+                    avatar={bid.offerAvatar}
+                  />
+                ))}
+              {/* <Information /> */}
+            </Box>
           </HStack>
         </GridItem>
       </Grid>

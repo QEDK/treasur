@@ -1,12 +1,12 @@
 import React from 'react'
 import { HStack, Box, Avatar, Text } from '@chakra-ui/react'
 
-const index = () => {
+const index = ({ name, value, avatar }) => {
     return (
         <div style={boxStyle}>
             <HStack spacing="20px">
                 <Box style={innerBoxStyle} w="5rem">
-                    <Avatar name="Sarthak Kundra" />
+                    <Avatar name="Sarthak Kundra" src={avatar} />
                 </Box>
                 <Box style={innerBoxStyle} w="25rem">
                     {/* 
@@ -15,12 +15,12 @@ const index = () => {
                         Type = "Listed" ? Listed by {name}
                     */}
                     <Text fontSize="1.3rem">
-                        Video put up for auction
+                        {name} put an offer of
                     </Text>
                 </Box>
                 <Box style={innerBoxStyle} w="10rem">
                     <Text fontSize="1.8rem">
-                        $5
+                        ${value}
                     </Text>
                 </Box>
             </HStack>

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import {Flex, Button, Box, Spacer, useToast } from "@chakra-ui/react";
 import { useSelector } from 'react-redux';
@@ -13,20 +13,6 @@ const index = () => {
   const { isAuthenticated, givenName, avatar } = useSelector((state) => state.signIn)
   const toast = useToast();
 
-  useEffect(() => {
-
-    if(isAuthenticated){
-      return toast({
-        title: "Authorization Succesful.",
-        description: "You've been successfully logged in.",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-        position: "top-right"
-      })
-
-    }
-  }, [isAuthenticated])
   return (
     <div style={navStyle}>
       <Flex direction="row" justify="flex-start" wrap={true}>

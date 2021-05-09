@@ -139,7 +139,7 @@ app.get("/history/:tokenURI", async (req, res) => {
     const queryText = `SELECT history FROM offers WHERE yt_id = '${tokenURI}';`
     const rv = await client.query(queryText);
     console.log(rv.rows[0].history);
-    res.send(rv.rows)
+    res.send(rv.rows[0].history)
 })
 app.get("/owned/:address", async (req, res) => {
   const { address } = req.params;
