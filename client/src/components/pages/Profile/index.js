@@ -26,9 +26,9 @@ const index = () => {
     const inventoryapi = await axios.get(
       `https://api.covalenthq.com/v1/80001/address/${address}/balances_v2/?nft=true&no-nft-fetch=false`
     );
-    const userNfts = inventoryapi.data.items.filter(
-      (item) => (item.contract_address = 0x54b327694d71596128064b495c70fe9f0d2919ad)
-    );
+    // const userNfts = inventoryapi.data.items.filter(
+    //   (item) => (item.contract_address = 0x54b327694d71596128064b495c70fe9f0d2919ad)
+    // );
   }, []);
 
   const getOwned = async () => {
