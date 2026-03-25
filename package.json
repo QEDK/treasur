@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@chainlink/contracts": "^0.1.6",
-    "@openzeppelin/contracts": "^4.0.0",
+    "@openzeppelin/contracts": "^4.9.6",
     "dotenv": "^8.2.0"
   }
 }
